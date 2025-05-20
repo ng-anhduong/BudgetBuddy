@@ -1,3 +1,3 @@
-from .index import auth_bp as index_bp
+from .data import auth_bp as data_bp
 
-blueprints = [index_bp]
+blueprints = [data_bp]

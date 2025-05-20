@@ -102,7 +102,7 @@ export function useSignOut() {
             if (res.ok) {
             Alert.alert("Successfully signed out", data.message);
             clearTokens()
-            router.push("/index");
+            router.push("/");
             } else {
             Alert.alert("Error", data.message || "Signout failed.");
             }
