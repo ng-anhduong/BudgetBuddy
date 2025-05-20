@@ -27,7 +27,7 @@ def sign_up():
 
         # Create new user
         hashed_password = generate_password_hash(cur_password)
-        new_user = User(username = cur_username, password = hashed_password)
+        new_user = User(username = cur_username, password = hashed_password) # type: ignore
         db.session.add(new_user)
         db.session.commit()
         return jsonify({'message': 'Successfully signed up a new account'}), 201
