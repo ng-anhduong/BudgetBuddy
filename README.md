@@ -31,4 +31,4 @@ This is a project created with React Native frontend and Flask backend running o
    ```bash
    npx expo start
    ```
-   
+    
