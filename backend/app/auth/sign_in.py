@@ -6,6 +6,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 
 auth_bp = Blueprint('sign_in', __name__, url_prefix='/auth')
 
+# route for sign in
 @auth_bp.route('/sign_in', methods=['POST'])
 def sign_in():
 

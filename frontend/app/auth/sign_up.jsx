@@ -1,26 +1,28 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { Text, View, TextInput, Button, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from 'expo-router';
-import { API_BASE } from "@/constants/api";
 import createStyles from "./style";
+import { useRouter } from 'expo-router';
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { ThemeContext } from "@/context/ThemeContext";
+import { useSignUp } from "@/hooks/auth";
 
 export default function SignUpScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter()
-  const {colorScheme, setColorScheme, theme} = useContext(ThemeContext)
+  const router = useRouter();
+  const {colorScheme, setColorScheme, theme} = useContext(ThemeContext);
   const [loaded, error] = useFonts({
         Inter_500Medium,
-  })
+  });
+
+  const signUp = useSignUp();
 
   if (!loaded && !error) {
         return null
   }
-
-  const styles = createStyles(theme, colorScheme)
+  
+  const styles = createStyles(theme, colorScheme);
 
   const validatePasswordRules = (password) => ({
     minLength: password.length >= 6,
@@ -35,39 +37,7 @@ export default function SignUpScreen() {
     <Text style={{ color: passed ? "green" : "red" }}>{passed ? "✔" : "✖"} {label}</Text>
   );
 
-  const handleSignUp = async () => {
-    const passwordRules = validatePasswordRules(password);
-    const allPassed = Object.values(passwordRules).every(Boolean);
-
-    if (!allPassed) {
-      Alert.alert("Password Invalid", "Please make sure all password requirements are met.");
-      return;
-    }
-
-    try {
-        const res = await fetch(`${API_BASE}/auth/sign_up`, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username,
-                password,
-            }),
-        });
-        const data = await res.json()
-        if (res.ok) {
-        Alert.alert("Success", data.message);
-        router.push("/auth/sign_in");
-        } else {
-        Alert.alert("Error", data.message || "Signup failed.");
-        }
-        
-    } catch (error) {
-        console.error("Signup error:", error.message);
-        Alert.alert("Network Error", error.message);
-    }
-  };
+  const passwordRules = validatePasswordRules(password);
 
   return (
     <SafeAreaView style ={{ flex: 1 }}>
@@ -86,23 +56,16 @@ export default function SignUpScreen() {
           style={styles.inputContainer}
         />
         <View style={{ marginBottom: 10 }}>
-        {(() => {
-          const passwordRules = validatePasswordRules(password);
-          return (
-            <>
-              {renderRule("At least 6 characters", passwordRules.minLength)}
-              {renderRule("No more than 100 characters", passwordRules.maxLength)}
-              {renderRule("Contains a number", passwordRules.hasNumber)}
-              {renderRule("Contains a lowercase letter", passwordRules.hasLowercase)}
-              {renderRule("Contains an uppercase letter", passwordRules.hasUppercase)}
-              {renderRule("Contains a special character", passwordRules.hasSpecialChar)}
-            </>
-          );
-        })()}
+          {renderRule("At least 6 characters", passwordRules.minLength)}
+          {renderRule("No more than 100 characters", passwordRules.maxLength)}
+          {renderRule("Contains a number", passwordRules.hasNumber)}
+          {renderRule("Contains a lowercase letter", passwordRules.hasLowercase)}
+          {renderRule("Contains an uppercase letter", passwordRules.hasUppercase)}
+          {renderRule("Contains a special character", passwordRules.hasSpecialChar)}
       </View>
         <Button 
           title="Sign Up" 
-          onPress={handleSignUp} 
+          onPress={() => signUp(username, password)} 
           style = {styles.saveButton}
         />
         <Button 
