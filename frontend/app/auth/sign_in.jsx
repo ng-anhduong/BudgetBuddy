@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useRouter } from "expo-router";
+import { useSignIn } from "@/hooks/auth";
+
 
 export default function SignInScreen() {
   const { theme, colorScheme } = useContext(ThemeContext);
@@ -9,6 +11,8 @@ export default function SignInScreen() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const signIn = useSignIn();
 
   return (
     <View style={styles.screen}>
@@ -38,7 +42,7 @@ export default function SignInScreen() {
 
       <TouchableOpacity
         style={[styles.button, { backgroundColor: theme.button }]}
-        onPress={() => console.log("Sign in")}
+        onPress={() => signIn(username, password)}
       >
         <Text style={[styles.buttonText, { color: 'black' }]}>
           Sign In

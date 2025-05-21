@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useRouter } from "expo-router";
+import { useSignUp } from "@/hooks/auth";
 
 export default function SignUpScreen() {
   const { theme, colorScheme } = useContext(ThemeContext);
@@ -18,6 +19,8 @@ export default function SignUpScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+
+  const signUp = useSignUp();
 
   const rules = {
     minLength: password.length >= 8,
@@ -87,7 +90,7 @@ export default function SignUpScreen() {
 
           <TouchableOpacity
             style={[styles.button, { backgroundColor: theme.button }]}
-            onPress={() => console.log("Sign up")}
+            onPress={() => signUp(username, password)}
             disabled={Object.values(rules).some((v) => !v)}
           >
             <Text
