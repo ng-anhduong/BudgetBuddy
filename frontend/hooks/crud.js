@@ -47,3 +47,89 @@ export function useAddTransactions() {
 
     return addTransactions;
 }
+
+export function useUpdateTransaction() {
+    const router = useRouter()
+    const refreshToken = useRefreshToken();
+
+    const updateTransaction = useCallback(async (dict) => {
+        try {
+            await refreshToken()
+            const tokenn = await getAccessToken()
+
+            if (!tokenn) {
+                console.log("Error", "No access token found.")
+                Alert.alert("Error", "No access token found.");
+                return;
+            }
+
+            const res = await fetch(`${API_BASE}/home_page/action/update`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${tokenn}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dict)
+
+            });
+
+            const data = await res.json()
+            
+            if (res.ok) {
+                Alert.alert("Successfully updated");
+                router.push("/tabs/home_page");
+            } else {
+                console.log(data.message)
+                Alert.alert("Failed:", data.message || "");
+            }
+        } catch (error) {
+            console.error("Save error:", error.message);
+            Alert.alert("Network Error", error.message);
+        }
+    }, [router]);
+
+    return updateTransaction;
+}
+
+export function useDeleteTransaction() {
+    const router = useRouter()
+    const refreshToken = useRefreshToken();
+
+    const deleteTransaction = useCallback(async (id) => {
+        try {
+            await refreshToken()
+            const tokenn = await getAccessToken()
+
+            if (!tokenn) {
+                console.log("Error", "No access token found.")
+                Alert.alert("Error", "No access token found.");
+                return;
+            }
+
+            const res = await fetch(`${API_BASE}/home_page/action/delete`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${tokenn}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({id,})
+
+            });
+
+            const data = await res.json()
+            
+            if (res.ok) {
+                Alert.alert("Successfully deleted");
+                router.push("/tabs/home_page");
+            } else {
+                console.log(data.message)
+                Alert.alert("Failed:", data.message || "");
+            }
+        } catch (error) {
+            console.error("delete error:", error.message);
+            Alert.alert("Network Error", error.message);
+        }
+    }, [router]);
+
+    return deleteTransaction;
+}

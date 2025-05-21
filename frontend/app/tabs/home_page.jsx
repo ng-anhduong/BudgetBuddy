@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Button, ActivityIndicator, Text, FlatList, View } from 'react-native';
+import { Button, ActivityIndicator, Text, FlatList, View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -8,6 +8,7 @@ import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useSignOut } from "@/hooks/auth";
 import { useUsername, useTransactions } from "@/hooks/data";
+import { useDeleteTransaction } from '@/hooks/crud';
 
 export default function NotFoundScreen() {  
     const router = useRouter();
@@ -18,6 +19,7 @@ export default function NotFoundScreen() {
     const {data: username, loading: load1} = useUsername();
     const {data: transactions, loading: load2} = useTransactions();
     const signOut = useSignOut();
+    const deleteTransaction = useDeleteTransaction();
 
     if (!loaded && !error) {
         return null
@@ -40,7 +42,23 @@ export default function NotFoundScreen() {
                 <Text style={{fontSize:18, color: 'red'}}>
                     {item.category}: {item.amount} {item.currency} at {formattedDate}
                 </Text>
+                <Text style={{fontSize:18, color: 'red'}}><Pressable 
+                    onPress={() => router.push({
+                        pathname: '/tabs/update',
+                        params: { "id": item.id }
+                    })}
+                >
+                    Update
+                </Pressable>
+                </Text>
+                <Text style={{fontSize:18, color: 'red'}}><Pressable 
+                    onPress={() => deleteTransaction(item.id)}
+                >
+                    Delete
+                </Pressable>
+                </Text>
             </View>
+
         );
     }
 
