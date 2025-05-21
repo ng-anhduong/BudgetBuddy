@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   ScrollView,
+  Alert,
 } from "react-native";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useRouter } from "expo-router";
@@ -29,6 +30,26 @@ export default function SignUpScreen() {
     hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
     matchesConfirm: password === confirm && password.length > 0,
   };
+
+  const handleSignUp = async () => {
+    const allRulesPass = Object.values(rules).every(v => v);
+
+    if (!allRulesPass) {
+      return Alert.alert(
+        "Weak password",
+        "Make sure it’s at least 8 chars, has a number, uppercase, special char, and matches confirmation."
+      );
+    }
+    if (!password || !username) {
+      Alert.alert("Signup failed", "Missing values")
+      return
+    }
+    if (password != confirm) {
+      Alert.alert("Signup failed", "Confirm password must be the same as password")
+      return
+    }
+    signUp(username, password);
+  }
 
   const renderRule = (label, passed) => (
     <Text style={{ color: passed ? "green" : "red", marginBottom: 2 }}>
@@ -90,7 +111,7 @@ export default function SignUpScreen() {
 
           <TouchableOpacity
             style={[styles.button, { backgroundColor: theme.button }]}
-            onPress={() => signUp(username, password)}
+            onPress={handleSignUp}
             disabled={Object.values(rules).some((v) => !v)}
           >
             <Text
