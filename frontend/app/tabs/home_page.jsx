@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Button, ActivityIndicator, Text, FlatList, View, Pressable } from 'react-native';
+import { Button, ActivityIndicator, Text, FlatList} from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -7,8 +7,7 @@ import createStyles from "./style";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useSignOut } from "@/hooks/auth";
-import { useUsername, useExpenses } from "@/hooks/data";
-import { useDeleteExpense } from '@/hooks/crud';
+import { useUsername } from "@/hooks/data";
 
 export default function NotFoundScreen() {  
     const router = useRouter();
@@ -17,9 +16,7 @@ export default function NotFoundScreen() {
         Inter_500Medium,
     })  
     const {data: username, loading: load1} = useUsername();
-    const {data: Expenses, loading: load2} = useExpenses();
     const signOut = useSignOut();
-    const deleteExpense = useDeleteExpense();
 
     if (!loaded && !error) {
         return null
@@ -27,56 +24,22 @@ export default function NotFoundScreen() {
 
     const styles = createStyles(theme, colorScheme);
 
-    if (load1 || load2) {
+    if (load1) {
         return <ActivityIndicator style={{ flex: 1 }} />;
     }
 
     if (!username) {
         return <Text style={{ padding: 20 }}>No data</Text>;
     }
-    
-    const renderItem = ({item}) => {
-        const formattedDate = new Date(item.time).toLocaleDateString('en-GB');
-        return (
-            <View style={styles.row}>
-                <Text style={{fontSize:18, color: 'red'}}>
-                    {item.category}: {item.amount} {item.currency} at {formattedDate}
-                </Text>
-                <Text style={{fontSize:18, color: 'red'}}><Pressable 
-                    onPress={() => router.push({
-                        pathname: '/personal_expenses/update',
-                        params: { "id": item.id }
-                    })}
-                >
-                    Update
-                </Pressable>
-                </Text>
-                <Text style={{fontSize:18, color: 'red'}}><Pressable 
-                    onPress={() => deleteExpense(item.id)}
-                >
-                    Delete
-                </Pressable>
-                </Text>
-            </View>
 
-        );
-    }
-
-    const keyExtractor = (item, index) => index.toString();
-
-    // Screen
+    // Home Screen
     return (
         <>
         <ThemedView style={styles.container}>
             <ThemedText type="title">Welcome, {username} </ThemedText>
-            <FlatList
-                data={Expenses}
-                renderItem={renderItem}
-                keyExtractor={keyExtractor}
-            />
             <Button 
-                title="add" 
-                onPress={() => router.push('/personal_expenses/add')} 
+                title="Show all expenses" 
+                onPress={() => router.push('/personal_expenses/history')} 
                 style = {styles.saveButton}
             />
             <Button 

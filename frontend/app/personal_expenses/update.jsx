@@ -10,7 +10,7 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { useUpdateExpense } from "@/hooks/crud";
 import { useExpenseTypes, useCurrencyTypes } from "@/hooks/data";
 
-export default function Update() {
+export default function UpdateExpense() {
     const { id } = useLocalSearchParams();  
     const [category, setCategory] = useState("");
     const [amount, setAmount] = useState("");
@@ -36,7 +36,7 @@ export default function Update() {
         }, [load1, expense_types]);
     
     useEffect(() => {
-        if (!load1 && currency_types.length > 0) {
+        if (!load2 && currency_types.length > 0) {
         setCurrency(currency_types[0]);
         }
     }, [load2, currency_types]);
@@ -153,8 +153,8 @@ export default function Update() {
                 style = {styles.saveButton}
             />
             <Button 
-                title="Dashboard" 
-                onPress={() => router.push('/tabs/home_page')} 
+                title="Back" 
+                onPress={() => router.push('/personal_expenses/history')} 
                 style = {styles.saveButton}
             />
         </ThemedView>

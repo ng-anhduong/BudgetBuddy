@@ -10,7 +10,7 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { useAddExpense } from "@/hooks/crud";
 import { useExpenseTypes, useCurrencyTypes } from "@/hooks/data";
 
-export default function Add() {  
+export default function AddExpense() {  
     const [category, setCategory] = useState("");
     const [amount, setAmount] = useState("");
     const [currency, setCurrency] = useState("");
@@ -36,7 +36,7 @@ export default function Add() {
     }, [load1, expense_types]);
 
     useEffect(() => {
-        if (!load1 && currency_types.length > 0) {
+        if (!load2 && currency_types.length > 0) {
         setCurrency(currency_types[0]);
         }
     }, [load2, currency_types]);
@@ -151,8 +151,8 @@ export default function Add() {
                 style = {styles.saveButton}
             />
             <Button 
-                title="Dashboard" 
-                onPress={() => router.push('/tabs/home_page')} 
+                title="Back" 
+                onPress={() => router.push('/personal_expenses/history')} 
                 style = {styles.saveButton}
             />
         </ThemedView>
