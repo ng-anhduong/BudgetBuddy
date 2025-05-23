@@ -44,7 +44,7 @@ export default function NotFoundScreen() {
                 </Text>
                 <Text style={{fontSize:18, color: 'red'}}><Pressable 
                     onPress={() => router.push({
-                        pathname: '/tabs/update',
+                        pathname: '/personal_expenses/update',
                         params: { "id": item.id }
                     })}
                 >
@@ -76,7 +76,7 @@ export default function NotFoundScreen() {
             />
             <Button 
                 title="add" 
-                onPress={() => router.push('/tabs/add')} 
+                onPress={() => router.push('/personal_expenses/add')} 
                 style = {styles.saveButton}
             />
             <Button 

@@ -58,7 +58,7 @@ export function useSignIn() {
             const access_token = data.access_token
             const refresh_token = data.refresh_token
 
-            saveTokens(access_token, refresh_token)
+            await saveTokens(access_token, refresh_token)
 
             Alert.alert("Success", "Successfully logging in");
             router.push("/tabs/home_page");
@@ -101,7 +101,7 @@ export function useSignOut() {
             const data = await res.json()
             if (res.ok) {
             Alert.alert("Successfully signed out", data.message);
-            clearTokens()
+            await clearTokens()
             router.push("/");
             } else {
             Alert.alert("Error", data.message || "Signout failed.");
