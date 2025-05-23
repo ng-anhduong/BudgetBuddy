@@ -11,9 +11,7 @@ auth_bp = Blueprint('home_page', __name__, url_prefix='/home_page/data')
 @auth_bp.route('/username', methods=['POST'])
 @jwt_required()
 def username():
-    return jsonify({
-        "username":current_user.username,
-    })
+    return jsonify(current_user.username)
 
 @auth_bp.route('/expense_types', methods=['POST'])
 @jwt_required()

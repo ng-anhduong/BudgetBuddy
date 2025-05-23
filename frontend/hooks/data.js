@@ -4,53 +4,12 @@ import { API_BASE } from '@/constants/api';
 import { getAccessToken } from '@/constants/authStorage';
 import { useRefreshToken } from './auth';
 
-export function useUsername() {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const refreshToken = useRefreshToken();
+export function useUsername()       {return getData(`${API_BASE}/home_page/data/username`)}
+export function useExpenseTypes()   {return getData(`${API_BASE}/home_page/data/expense_types`)}
+export function useCurrencyTypes()  {return getData(`${API_BASE}/home_page/data/currency_types`)}
+export function useExpenses()       {return getData(`${API_BASE}/home_page/data/expenses`)}
 
-    const loadData = useCallback(async () => {
-        try {
-            await refreshToken()
-            const tokenn = await getAccessToken()
-        
-            if (!tokenn) {
-                console.log("Error", "No access token found.")
-                Alert.alert("Error", "No access token found.");
-                return;
-            }
-            
-            const res = await fetch(`${API_BASE}/home_page/data/username`, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${tokenn}`,
-                    
-                },
-            });
-
-            const json = await res.json();
-            
-            if (res.ok) {
-                setData(json.username)
-            } else {
-                throw new Error(`Status ${res.status}`);
-            }
-        } catch (e) {
-            Alert.alert('Error loading dashboard', e.message);
-            console.log('Error loading dashboard', e.message)
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        loadData();
-    }, [loadData]);
-    
-    return {data, loading}
-}
-
-export function useExpenseTypes() {
+function getData(api) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const refreshToken = useRefreshToken();
@@ -66,7 +25,7 @@ export function useExpenseTypes() {
                 return;
             }
             
-            const res = await fetch(`${API_BASE}/home_page/data/expense_types`, {
+            const res = await fetch(`${api}`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${tokenn}`,
@@ -82,99 +41,8 @@ export function useExpenseTypes() {
                 throw new Error(`Status ${res.status}`);
             }
         } catch (e) {
-            Alert.alert('Error loading dashboard', e.message);
-            console.log('Error loading dashboard', e.message)
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        loadData();
-    }, [loadData]);
-    
-    return {data, loading}
-}
-
-export function useCurrencyTypes() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const refreshToken = useRefreshToken();
-
-    const loadData = useCallback(async () => {
-        try {
-            await refreshToken()
-            const tokenn = await getAccessToken()
-        
-            if (!tokenn) {
-                console.log("Error", "No access token found.")
-                Alert.alert("Error", "No access token found.");
-                return;
-            }
-            
-            const res = await fetch(`${API_BASE}/home_page/data/currency_types`, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${tokenn}`,  
-                },
-            });
-
-            const json = await res.json();
-            
-            if (res.ok) {
-                setData(json)
-            } else {
-                throw new Error(`Status ${res.status}`);
-            }
-        } catch (e) {
-            Alert.alert('Error loading dashboard', e.message);
-            console.log('Error loading dashboard', e.message)
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        loadData();
-    }, [loadData]);
-    
-    return {data, loading}
-}
-
-export function useExpenses() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const refreshToken = useRefreshToken();
-
-    const loadData = useCallback(async () => {
-        try {
-            await refreshToken()
-            const tokenn = await getAccessToken()
-        
-            if (!tokenn) {
-                console.log("Error", "No access token found.")
-                Alert.alert("Error", "No access token found.");
-                return;
-            }
-            
-            const res = await fetch(`${API_BASE}/home_page/data/expenses`, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${tokenn}`,
-                    
-                },
-            });
-
-            const json = await res.json();
-            
-            if (res.ok) {
-                setData(json)
-            } else {
-                throw new Error(`Status ${res.status}`);
-            }
-        } catch (e) {
-            Alert.alert('Error loading dashboard', e.message);
-            console.log('Error loading dashboard', e.message)
+            Alert.alert('Error loading data', e.message);
+            console.log('Error loading data', e.message)
         } finally {
             setLoading(false);
         }
