@@ -1,13 +1,14 @@
 from flask import jsonify, request, Blueprint
 from flask_jwt_extended import jwt_required, current_user
-from app.extension import db
+from app.extension import db, FINANCE_DATA
 from sqlalchemy import select
 from app.models import Expenses, ExpenseTypes, CurrencyTypes
 from datetime import date
 
 auth_bp = Blueprint('data', __name__, url_prefix='/expenses/data')
 
-# route to retrieve personal data from db
+ALLOWED_CURRENCIES = {c.value for c in CurrencyTypes} # type: ignore
+
 @auth_bp.route('/username', methods=['POST'])
 @jwt_required()
 def username():
@@ -30,18 +31,41 @@ def currency_types():
 def expenses():
     query = select(Expenses).filter_by(user_id=current_user.id).order_by(Expenses.time)     # type: ignore
     trs = db.session.execute(query).scalars().all()
-    trs_list = [
-        {
-            "id":               trn.id,                           
-            "category":         trn.category.value,                 # type: ignore
-            "optional_cat":     trn.optional_cat,        
-            "amount":           trn.amount,                    
-            "currency":         trn.currency.value,                 # type: ignore
-            "description":      trn.description,          
-            "time":             trn.time.isoformat(),
-        } 
-        for trn in trs
-    ]
+    if trs is None:
+        return jsonify({"message":"Unauthorized"}), 400
+    
+    data = request.get_json()
+    trs_list = []
+    if data is None or data.get('currency') is None:
+        trs_list = [
+            {
+                "id":               trn.id,                           
+                "category":         trn.category.value,                 # type: ignore
+                "optional_cat":     trn.optional_cat,        
+                "amount":           trn.amount,                    
+                "currency":         trn.currency.value,                 # type: ignore
+                "description":      trn.description,          
+                "time":             trn.time.isoformat(),
+            } 
+            for trn in trs
+        ]
+    else:
+        currency = data.get('currency')
+        if currency not in ALLOWED_CURRENCIES:
+            return jsonify({ 'message': 'Unknown currency' }), 400
+        amt = lambda x, y: round(float(x)/FINANCE_DATA['rates'][y]* FINANCE_DATA['rates'][currency], 2)
+        trs_list = [
+            {
+                "id":               trn.id,                           
+                "category":         trn.category.value,                     # type: ignore
+                "optional_cat":     trn.optional_cat,        
+                "amount":           amt(trn.amount, trn.currency.value),    # type: ignore
+                "currency":         currency,           
+                "description":      trn.description,          
+                "time":             trn.time.isoformat(),
+            } 
+            for trn in trs
+        ]
     return jsonify(trs_list), 200
 
 @auth_bp.route('/updating', methods=['POST'])

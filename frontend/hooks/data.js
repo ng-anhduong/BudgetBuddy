@@ -4,10 +4,10 @@ import { API_BASE } from '@/constants/api';
 import { getAccessToken } from '@/constants/authStorage';
 import { useRefreshToken } from './auth';
 
-export function useUsername()           {return getData(`${API_BASE}/expenses/data/username`)}
-export function useExpenseTypes()       {return getData(`${API_BASE}/expenses/data/expense_types`)}
-export function useCurrencyTypes()      {return getData(`${API_BASE}/expenses/data/currency_types`)}
-export function useExpenses()           {return getData(`${API_BASE}/expenses/data/expenses`)}
+export function useUsername()               {return getData(`${API_BASE}/expenses/data/username`)}
+export function useExpenseTypes()           {return getData(`${API_BASE}/expenses/data/expense_types`)}
+export function useCurrencyTypes()          {return getData(`${API_BASE}/expenses/data/currency_types`)}
+export function useExpenses(dict = null)    {return getData(`${API_BASE}/expenses/data/expenses`, dict)}
 export function useUpdatingExpense(dict)    {return getData(`${API_BASE}/expenses/data/updating`, dict)}
 
 function getData(api, dict = null) {

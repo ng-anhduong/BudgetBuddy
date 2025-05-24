@@ -19,7 +19,7 @@ export default function AddExpense() {
     const [year, setYear] = useState("");
     const {data: expense_types, loading: load1} = useExpenseTypes();
     const {data: currency_types, loading: load2} = useCurrencyTypes();
-
+    
 
     const router = useRouter();
     const {colorScheme, setColorScheme, theme} = useContext(ThemeContext)
