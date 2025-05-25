@@ -8,38 +8,27 @@ import createStyles from "./style";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useAddExpense } from "@/hooks/crud";
-import { useExpenseTypes, useCurrencyTypes } from "@/hooks/data";
+import { useExpenseForm } from "@/hooks/form";
 
 export default function AddExpense() {  
-    const [category, setCategory] = useState("");
-    const [amount, setAmount] = useState("");
-    const [currency, setCurrency] = useState("");
-    const [day, setDay] = useState("");
-    const [month, setMonth] = useState("");
-    const [year, setYear] = useState("");
-    const {data: expense_types, loading: load1} = useExpenseTypes();
-    const {data: currency_types, loading: load2} = useCurrencyTypes();
-    
+    const add = useAddExpense();
+    const {
+        category, setCategory,
+        amount,   setAmount,
+        currency, setCurrency,
+        day,      setDay,
+        month,    setMonth,
+        year,     setYear,
+        expense_types, currency_types,
+        load1, load2,
+        submit: addExpense,
+    } = useExpenseForm(add);
 
     const router = useRouter();
     const {colorScheme, setColorScheme, theme} = useContext(ThemeContext)
     const [loaded, error] = useFonts({        
         Inter_500Medium,
     })
-
-    const add = useAddExpense();
-    
-    useEffect(() => {
-        if (!load1 && expense_types.length > 0) {
-        setCategory(expense_types[0]);
-        }
-    }, [load1, expense_types]);
-
-    useEffect(() => {
-        if (!load2 && currency_types.length > 0) {
-        setCurrency(currency_types[0]);
-        }
-    }, [load2, currency_types]);
     
     if (!loaded && !error) {
         return null
@@ -47,28 +36,6 @@ export default function AddExpense() {
 
     if (load1 || load2) {
         return <ActivityIndicator style={{ flex: 1 }} />;
-    }
-
-    const addExpense = async () => {
-        if (!category || !amount || !currency || !day || !month || !year) {
-            Alert.alert("Please fill out all fields");
-            return;
-        }
-
-        const dt = new Date(
-            Number(year),
-            Number(month) - 1,
-            Number(day)
-        );
-
-        const isoDate = dt.toISOString();
-        
-        add({
-            category,
-            amount: parseFloat(amount),
-            currency,
-            time: isoDate,
-        });
     }
 
     const styles = createStyles(theme, colorScheme);

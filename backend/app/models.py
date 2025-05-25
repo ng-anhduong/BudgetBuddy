@@ -21,7 +21,7 @@ class Expenses(db.Model):
     user_id:       Mapped[int]              = mapped_column(ForeignKey("user.id"), nullable = False)
     category:      Mapped[str]              = mapped_column(SQLEnum(ExpenseTypes), nullable=False)  # type: ignore
     optional_cat:  Mapped[str]              = mapped_column(String(100), nullable = True)
-    amount:        Mapped[float]            = mapped_column(Numeric(10, 2), nullable = False)
+    amount:        Mapped[float]            = mapped_column(Numeric(scale=2), nullable = False)
     currency:      Mapped[str]              = mapped_column(SQLEnum(CurrencyTypes), nullable=False) # type: ignore
     description:   Mapped[str]              = mapped_column(Text, nullable = True)
     time:          Mapped[date]             = mapped_column(Date, default=date.today(), nullable=False)

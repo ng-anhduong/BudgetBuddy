@@ -8,69 +8,35 @@ import createStyles from "./style";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useUpdateExpense } from "@/hooks/crud";
-import { useExpenseTypes, useCurrencyTypes, useUpdatingExpense } from "@/hooks/data";
+import { useExpenseForm } from "@/hooks/form";
 
 export default function UpdateExpense() {
-    const { id } = useLocalSearchParams();  
-    const [category, setCategory] = useState("");
-    const [amount, setAmount] = useState("");
-    const [currency, setCurrency] = useState("");
-    const [day, setDay] = useState("");
-    const [month, setMonth] = useState("");
-    const [year, setYear] = useState("");
-    const {data: expense_types, loading: load1} = useExpenseTypes();
-    const {data: currency_types, loading: load2} = useCurrencyTypes();
-    const {data: expense, loading: load3} = useUpdatingExpense({id: id});
+    const { id } = useLocalSearchParams();
+    const update = useUpdateExpense();  
+    const {
+        category, setCategory,
+        amount,   setAmount,
+        currency, setCurrency,
+        day,      setDay,
+        month,    setMonth,
+        year,     setYear,
+        expense_types, currency_types,
+        load1, load2,
+        submit: updateExpense,
+    } = useExpenseForm(update, id);
 
     const router = useRouter();
     const {colorScheme, setColorScheme, theme} = useContext(ThemeContext)
     const [loaded, error] = useFonts({        
         Inter_500Medium,
-    })
-
-    const update = useUpdateExpense();
-    
-    useEffect(() => {
-            if (!load3) {
-            setCategory(expense.category);
-            setAmount(parseFloat(expense.amount));
-            setCurrency(expense.currency);
-            const time = new Date(expense.time);
-            setDay(time.getDate());
-            setMonth(time.getMonth() + 1);
-            setYear(time.getFullYear());
-            }
-        }, [load3, expense]);
+    })    
     
     if (!loaded && !error) {
         return null
     }
 
-    if (load1 || load2 || load3) {
+    if (load1 || load2) {
         return <ActivityIndicator style={{ flex: 1 }} />;
-    }
-
-    const updateExpense = async () => {
-        if (!category || !amount || !currency || !day || !month || !year) {
-            alert("Please fill out all fields");
-            return;
-        }
-
-        const dt = new Date(
-            Number(year),
-            Number(month) - 1,
-            Number(day)
-        );
-
-        const isoDate = dt.toISOString();
-        
-        update({
-            id,
-            category,
-            amount: parseFloat(amount),
-            currency,
-            time: isoDate,
-        });
     }
 
     const styles = createStyles(theme, colorScheme);

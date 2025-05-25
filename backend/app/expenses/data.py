@@ -42,7 +42,7 @@ def expenses():
                 "id":               trn.id,                           
                 "category":         trn.category.value,                 # type: ignore
                 "optional_cat":     trn.optional_cat,        
-                "amount":           trn.amount,                    
+                "amount":           round(float(trn.amount), 2),                    
                 "currency":         trn.currency.value,                 # type: ignore
                 "description":      trn.description,          
                 "time":             trn.time.isoformat(),
