@@ -31,8 +31,6 @@ def currency_types():
 def expenses():
     query = select(Expenses).filter_by(user_id=current_user.id).order_by(desc(Expenses.time))     # type: ignore
     trs = db.session.execute(query).scalars().all()
-    if trs is None:
-        return jsonify({"message":"Unauthorized"}), 400
     
     data = request.get_json()
     trs_list = []

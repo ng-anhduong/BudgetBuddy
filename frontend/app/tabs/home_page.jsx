@@ -65,6 +65,11 @@ export default function NotFoundScreen() {
                 style = {styles.saveButton}
             />
             <Button 
+                title="Show all monthly limit" 
+                onPress={() => router.push('/monthly_limit/allLimits')} 
+                style = {styles.saveButton}
+            />
+            <Button 
                 title="Sign out" 
                 onPress={() => signOut()} 
                 style = {styles.saveButton}

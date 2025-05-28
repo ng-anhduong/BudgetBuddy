@@ -13,9 +13,6 @@ def subs():
     query = select(Subscriptions).filter_by(user_id=current_user.id).order_by(Subscriptions.end_time)     # type: ignore
     trs = db.session.execute(query).scalars().all()
 
-    if trs is None:
-        return jsonify({"message":"Unauthorized"}), 400
-    
     trs_list = [
         {
             "id":           trn.id,
