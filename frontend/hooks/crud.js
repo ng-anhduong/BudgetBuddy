@@ -21,7 +21,7 @@ function useAction(api, message) {
             if (!tokenn) {
                 console.log("Error", "No access token found.")
                 Alert.alert("Error", "Unauthorized");
-                return;
+                return false;
             }
             const res = await fetch(api, {
                 method: 'POST',
@@ -37,14 +37,17 @@ function useAction(api, message) {
             
             if (res.ok) {
                 Alert.alert(message);
-                router.push("/personal_expenses/history");
+                router.push("/personal_expenses/expenses");
             } else {
                 console.log(data.message)
                 Alert.alert("Failed:", data.message || "");
             }
+            return res.ok;
+            
         } catch (error) {
             console.error("Database error:", error.message);
             Alert.alert("Network Error", error.message);
+            return false;
         }
     }, [router]);
 
