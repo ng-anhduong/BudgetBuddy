@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Text, View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, TextInput
+  Text, View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, TextInput, Button
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useExpenses } from '@/hooks/data';
-import { useDeleteExpense } from '@/hooks/crud';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { Picker } from "@react-native-picker/picker";
+import { useExpenses, useCurrencyTypes, useCurrencyPreference } from '@/hooks/data';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function AllExpenses() {
+  // search for params: currency when navigate to this screen
+  const { cur } = useLocalSearchParams();
+
+  // fetch data based on user's currency preference
+  const { data: expenses, loading: expenseLoading } = useExpenses({currency: cur})
+
+  // fetch all CurrencyTypes
+  const { data: currencyTypes, loading: currencyLoading } = useCurrencyTypes();
+
+  // load user's preference 
+  const { data: preferenceCurrency, loading: preferenceCurrencyLoading } = useCurrencyPreference();
+
+  // set visible currency variable
+  const [currency, setCurrency] = useState("");
+
+  // set initial value to user's preference
+  useEffect(()=>{
+    if(!preferenceCurrencyLoading) {
+      setCurrency(preferenceCurrency)
+    }
+  },[preferenceCurrencyLoading])
+
   const router = useRouter();
-  const { data: Expenses, loading } = useExpenses();
-  const deleteExpense = useDeleteExpense();
   const [query, setQuery] = useState('');
 
-  if (loading) {
+  if (expenseLoading || currencyLoading) {
     return <ActivityIndicator style={{ flex: 1 }} />;
   }
 
-  const filtered = Expenses.filter(item =>
+  const filtered = expenses.filter(item =>
     item.category.toLowerCase().includes(query.toLowerCase()) ||
     item.description.toLowerCase().includes(query.toLowerCase())
   );
@@ -40,7 +61,9 @@ export default function AllExpenses() {
           <Text style={styles.description}>{item.description}</Text>
         </View>
         <View style={styles.details}>
-          <Text style={[styles.amount, { color: item.amount > 0 ? 'green' : 'red' }]}>${item.amount}</Text>
+          <Text style={[styles.amount, { color: item.amount > 0 ? 'green' : 'red' }]}> 
+            {item.amount} {item.currency}
+          </Text>
           <Text style={styles.date}>{`${day} ${month}`}</Text>
         </View>
       </TouchableOpacity>
@@ -49,15 +72,51 @@ export default function AllExpenses() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>All Expenses</Text>
-
+      <View style={{
+        flexDirection: 'row', 
+        flexWrap: 'wrap',
+      }}>
+        <Ionicons name="arrow-back" size={24} color="black" style={{paddingRight: '24%',}}
+          onPress = {() => router.replace('/personal_expenses/expenses')}
+        />
+        <Text style={styles.title}>All Expenses</Text>
+      </View>
       <TextInput
         style={styles.search}
         placeholder="Search category or description"
         value={query}
         onChangeText={setQuery}
       />
+      {/* Currency setting box */}
+      <View style={styles.pickerWrapper}>
+              <Picker
+                  enabled={!currencyLoading}
+                  selectedValue={currency}
+                  onValueChange={setCurrency}
+                  style={styles.picker}
+              >
+              <Picker.Item
+                  label="Original"
+                  value={""}
+              />
+              {currencyLoading
+                  ? <Picker.Item label="Loading…" value="" />
+                  : currencyTypes.map(t => <Picker.Item key={t} label={t} value={t} />)
+              }
+              </Picker>
 
+              <Button 
+                  title="Change currency" 
+                  onPress={() => currency == "" 
+                    ? router.replace('/personal_expenses/history')
+                    : router.replace({
+                        pathname:'/personal_expenses/history',
+                        params: {"cur": currency}
+                    })
+                  }
+                  
+              />
+          </View>
       <FlatList
         data={filtered}
         renderItem={renderItem}
@@ -120,5 +179,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#777',
     marginTop: 4,
+  },
+  pickerWrapper: {
+        borderWidth: 1,
+
+        borderRadius: 4,
+        marginBottom: 12,
+        overflow: "hidden",
+  },
+  picker: {
+      height: 50,
+      width: "100%",
   },
 });
