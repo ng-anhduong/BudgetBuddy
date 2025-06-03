@@ -1,7 +1,7 @@
 from flask import jsonify, request, Blueprint
 from flask_jwt_extended import jwt_required, current_user
 from app.extension import db, FINANCE_DATA
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, extract
 from app.models import Expenses, ExpenseTypes, CurrencyTypes
 from datetime import date
 
@@ -103,3 +103,45 @@ def updating_expense():
             "description":      trn.description,          
             "time":             trn.time.isoformat(),
         }), 200 
+
+@auth_bp.route('/dashboard', methods = ['POST'])
+@jwt_required()
+def newest_expenses():  
+    query = (select(Expenses)
+                .where(Expenses.user_id == current_user.id)
+                .order_by(desc(Expenses.time))
+                .limit(5))
+    trs = db.session.execute(query).scalars().all()
+    currency = "SGD"
+    if current_user.currency is not None:
+        currency = current_user.currency.value
+
+    amt = lambda x, y: round(float(x)/FINANCE_DATA['rates'][y]* FINANCE_DATA['rates'][currency], 2)
+    
+    trs_list = [
+        {
+            "id":               trn.id,                           
+            "category":         trn.category.value,                     # type: ignore
+            "optional_cat":     trn.optional_cat,        
+            "amount":           amt(trn.amount, trn.currency.value),    # type: ignore
+            "currency":         currency,           
+            "description":      trn.description,          
+            "time":             trn.time.isoformat(),
+        } 
+        for trn in trs
+    ]
+    today = date.today().day
+    query = (select(Expenses)
+                .where(Expenses.user_id == current_user.id)
+                .where(extract('day', Expenses.time) == today))
+    trs = db.session.execute(query).scalars().all() 
+    
+    total = float(0)
+    for trn in trs:
+        total += float(amt(trn.amount, trn.currency.value)) # type: ignore
+
+    return jsonify({
+        'total': round(total, 2),
+        'currency': currency,
+        'newestExpenses': trs_list,
+    }), 200
