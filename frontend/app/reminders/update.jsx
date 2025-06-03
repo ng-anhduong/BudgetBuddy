@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
-import { Button, ActivityIndicator, TextInput, View, Text, Alert } from 'react-native';
+import { Button, ActivityIndicator, TextInput, View, Text, Alert, StyleSheet } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import createStyles from "./style";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
-import { ThemeContext } from "@/context/ThemeContext";
 import { useUpdateSubscription } from "@/hooks/reminder";
 import { useSubscriptionForm } from "@/hooks/subsriptionForm";
 
@@ -24,7 +22,6 @@ export default function AddExpense() {
     } = useSubscriptionForm(update, id);
 
     const router = useRouter();
-    const {colorScheme, setColorScheme, theme} = useContext(ThemeContext)
     const [loaded, error] = useFonts({        
         Inter_500Medium,
     })
@@ -33,7 +30,6 @@ export default function AddExpense() {
         return null
     }
 
-    const styles = createStyles(theme, colorScheme);
     // Screen
     return (
         <>
@@ -120,4 +116,69 @@ export default function AddExpense() {
         </>
     );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffde1a',
+    paddingHorizontal: 20,
+    paddingTop: 40,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  search: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    fontSize: 16,
+  },
+  card: {
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    elevation: 2,
+  },
+  category: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  description: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 4,
+  },
+  details: {
+    alignItems: 'flex-end',
+  },
+  amount: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  date: {
+    fontSize: 12,
+    color: '#777',
+    marginTop: 4,
+  },
+  pickerWrapper: {
+        borderWidth: 1,
+
+        borderRadius: 4,
+        marginBottom: 12,
+        overflow: "hidden",
+  },
+  picker: {
+      height: 50,
+      width: "100%",
+  },
+});
 

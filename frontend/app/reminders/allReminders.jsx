@@ -1,9 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button, ActivityIndicator, Text, FlatList, View, Pressable, Alert, Platform } from 'react-native';
+import { Button, ActivityIndicator, Text, FlatList, View, Pressable, Alert, Platform, StyleSheet } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import createStyles from "./style";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
-import { ThemeContext } from "@/context/ThemeContext";
 import { useSubscriptions } from '@/hooks/data';
 import { useDeleteSubscription } from '@/hooks/reminder';
 import * as Notifications from 'expo-notifications';
@@ -18,7 +16,6 @@ export default function AllReminders() {
 
     const router = useRouter();
     const deleteSubs = useDeleteSubscription();
-    const {colorScheme, setColorScheme, theme} = useContext(ThemeContext)
     const [loaded, error] = useFonts({        
         Inter_500Medium,
     })  
@@ -33,8 +30,6 @@ export default function AllReminders() {
         return <ActivityIndicator style={{ flex: 1 }} />;
     }
 
-    const styles = createStyles(theme, colorScheme);
-    
     const renderItem = ({item}) => {
         const formattedDate = new Date(item.end_time).toLocaleDateString('en-GB');
         return (
@@ -89,3 +84,67 @@ export default function AllReminders() {
     );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffde1a',
+    paddingHorizontal: 20,
+    paddingTop: 40,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  search: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    fontSize: 16,
+  },
+  card: {
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    elevation: 2,
+  },
+  category: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  description: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 4,
+  },
+  details: {
+    alignItems: 'flex-end',
+  },
+  amount: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  date: {
+    fontSize: 12,
+    color: '#777',
+    marginTop: 4,
+  },
+  pickerWrapper: {
+        borderWidth: 1,
+
+        borderRadius: 4,
+        marginBottom: 12,
+        overflow: "hidden",
+  },
+  picker: {
+      height: 50,
+      width: "100%",
+  },
+});
