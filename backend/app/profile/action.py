@@ -14,7 +14,12 @@ def set_profile_currency():
     data = request.get_json()
 
     currency = data.get('currency')
-    if currency not in ALLOWED_CURRENCIES:
+    
+    if currency is None:
+        pass
+
+    # check for user abuse or frontend error
+    elif currency not in ALLOWED_CURRENCIES:
         return jsonify({ 'message': 'Unknown currency' }), 400
     currency = CurrencyTypes(currency) # type: ignore
 

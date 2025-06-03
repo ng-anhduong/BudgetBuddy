@@ -35,18 +35,35 @@ def expenses():
     data = request.get_json()
     trs_list = []
     if data is None or data.get('currency') is None:
-        trs_list = [
-            {
-                "id":               trn.id,                           
-                "category":         trn.category.value,                 # type: ignore
-                "optional_cat":     trn.optional_cat,        
-                "amount":           round(float(trn.amount), 2),                    
-                "currency":         trn.currency.value,                 # type: ignore
-                "description":      trn.description,          
-                "time":             trn.time.isoformat(),
-            } 
-            for trn in trs
-        ]
+        currency = current_user.currency
+        if currency is None:
+            trs_list = [
+                {
+                    "id":               trn.id,                           
+                    "category":         trn.category.value,                 # type: ignore
+                    "optional_cat":     trn.optional_cat,        
+                    "amount":           round(float(trn.amount), 2),                    
+                    "currency":         trn.currency.value,                 # type: ignore
+                    "description":      trn.description,          
+                    "time":             trn.time.isoformat(),
+                } 
+                for trn in trs
+            ]
+        else:
+            currency = currency.value
+            amt = lambda x, y: round(float(x)/FINANCE_DATA['rates'][y]* FINANCE_DATA['rates'][currency], 2)
+            trs_list = [
+                {
+                    "id":               trn.id,                           
+                    "category":         trn.category.value,                     # type: ignore
+                    "optional_cat":     trn.optional_cat,        
+                    "amount":           amt(trn.amount, trn.currency.value),    # type: ignore
+                    "currency":         currency,           
+                    "description":      trn.description,          
+                    "time":             trn.time.isoformat(),
+                } 
+                for trn in trs
+            ]
     else:
         currency = data.get('currency')
         if currency not in ALLOWED_CURRENCIES:
