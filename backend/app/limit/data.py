@@ -19,17 +19,33 @@ def all_monthly_limit():
 
     data = request.get_json()
     if data is None or data.get('currency') is None:
-        for element in all_limits:
-            types=[val.value for val in element.types]
-            temp = calulate_percentage(float(element.amount), element.currency.value, element.types)     # type: ignore
-            limit_list.append({
-                'id':           element.id,
-                'amount':       element.amount,
-                'currency':     element.currency.value,  # type: ignore
-                'percentage':   temp.get('percentage'),
-                'total':        temp.get('total'),
-                'types':        types
-            })
+        currency = current_user.currency
+        if currency is None:
+            for element in all_limits:
+                types=[val.value for val in element.types]
+                temp = calulate_percentage(float(element.amount), element.currency.value, element.types)     # type: ignore
+                limit_list.append({
+                    'id':           element.id,
+                    'amount':       element.amount,
+                    'currency':     element.currency.value,  # type: ignore
+                    'percentage':   temp.get('percentage'),
+                    'total':        temp.get('total'),
+                    'types':        types
+                })
+        else:
+            currency = currency.value
+            for element in all_limits:
+                types=[val.value for val in element.types]
+                value = float(element.amount)/FINANCE_DATA['rates'][element.currency.value]* FINANCE_DATA['rates'][currency] # type: ignore
+                temp = calulate_percentage(value, currency, element.types)     # type: ignore
+                limit_list.append({
+                    'id':           element.id,
+                    'amount':       round(value,2),
+                    'currency':     currency,
+                    'percentage':   temp.get('percentage'),
+                    'total':        temp.get('total'),
+                    'types':        types
+                })
     else:
         currency = data.get('currency')
         if currency not in ALLOWED_CURRENCIES:
