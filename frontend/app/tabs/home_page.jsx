@@ -96,6 +96,13 @@ export default function HomeScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity
+        style={[styles.navBlock, { backgroundColor: '#FF8C5A' }]}
+        onPress={() => router.push('/reminders/allReminders')}
+      >
+        <Text style={styles.navText}>Subscriptions and reminders</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
         style={[styles.navBlock, { backgroundColor: '#4BAA71' }]}
         onPress={() => router.push('/statistics')}
       >
