@@ -9,40 +9,20 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // for the floating "+" button
 import { useRouter } from 'expo-router';
-import { useExpenses } from '@/hooks/data';
+import { useExpenses, useNewestExpenses } from '@/hooks/data';
 import AddExpenseModal from './add'; 
 
 export default function ExpensesScreen() {
   const router = useRouter();
   const [addVisible, setAddVisible] = useState(false);
 
-  // 1) Fetch all expenses and loading flag
-  const { data: expenses, loading } = useExpenses();
-
-  // 2) Compute “today’s total”
-  const todayTotal = useMemo(() => {
-    if (!Array.isArray(expenses)) return 0;
-    const now = new Date();
-    return expenses
-      .filter((item) => {
-        const itemDate = new Date(item.time);
-        return (
-          itemDate.getDate() === now.getDate() &&
-          itemDate.getMonth() === now.getMonth() &&
-          itemDate.getFullYear() === now.getFullYear()
-        );
-      })
-      .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  }, [expenses]);
-
-  // 3) Sort “newest first”
-  const sortedExpenses = useMemo(() => {
-    if (!Array.isArray(expenses)) return [];
-    return [...expenses].sort((a, b) => new Date(b.time) - new Date(a.time));
-  }, [expenses]);
-
-  // 4) Take only the first 5 items for “latest transactions”
-  const latestFive = useMemo(() => sortedExpenses.slice(0, 5), [sortedExpenses]);
+  /* fetch user latest expenses
+  @params
+    total: float 2 decimal point,
+    currency: string 3 characters,
+    newestExpenses: list of 5 newest expenses,
+  */
+  const { data: expenses, loading } = useNewestExpenses();
 
   if (loading) {
     return (
@@ -70,7 +50,7 @@ export default function ExpensesScreen() {
     return (
       <View style={[styles.transactionCard, { backgroundColor: bgColor }]}>
         <View style={styles.transactionText}>
-          <Text style={styles.txnTitle}>{item.category}</Text>
+          <Text style={styles.txnTitle}>{item.category} </Text>
           <Text style={styles.txnDescription}>{item.description}</Text>
         </View>
         <View style={styles.transactionMeta}>
@@ -80,7 +60,7 @@ export default function ExpensesScreen() {
               { color: Number(item.amount) >= 0 ? 'green' : 'red' },
             ]}
           >
-            {Number(item.amount) >= 0 ? '+' : '-'}${Math.abs(item.amount)}
+            {Number(item.amount) >= 0 ? '+' : '-'} {Math.abs(item.amount)} {item.currency}
           </Text>
           <Text style={styles.txnDate}>{`${day}/${month}/${year}`}</Text>
         </View>
@@ -94,7 +74,7 @@ export default function ExpensesScreen() {
       {/* ── 1) Summary Card ───────────────────────────────────────────────────────── */}
       <View style={styles.summaryCard}>
         <Text style={styles.summaryText}>Today, you have spent...</Text>
-        <Text style={styles.summaryAmount}>${todayTotal}</Text>
+        <Text style={styles.summaryAmount}> {expenses.total} {expenses.currency}</Text>
       </View>
 
       {/* ── 2) “Latest expenses” Header ─────────────────────────────────────────── */}
@@ -102,7 +82,7 @@ export default function ExpensesScreen() {
 
       {/* ── 3) FlatList of Only the 5 Most Recent Expenses ────────────────────────── */}
       <FlatList
-        data={latestFive}
+        data={expenses.newestExpenses}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ paddingBottom: 20 }}
