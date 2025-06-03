@@ -87,6 +87,9 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.optionButton} onPress={() => router.push('/settings/private')}>
             <Text style={styles.optionText}>Private settings</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.optionButton} onPress={() => router.push('/user/saveCurrency')}>
+            <Text style={styles.optionText}>Set currency preference</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.optionButton} onPress={() => router.push('/about')}>
             <Text style={styles.optionText}>About us</Text>
           </TouchableOpacity>
