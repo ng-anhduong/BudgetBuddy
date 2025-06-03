@@ -5,11 +5,22 @@ from app.models import Subscriptions
 from datetime import datetime
 from sqlalchemy import select
 
+# Create a blueprint
 auth_bp = Blueprint('subs_data', __name__, url_prefix='/subscriptions/data')
 
+# Route for retrieving all user's reminders
+# Return a list of elements
+# Each element is a dict
+# @params
+#   id: int
+#   name: string
+#   noti_id: string
+#   start_time: string in isoformat
+#   end_time: string in isoformat
 @auth_bp.route('/all', methods=['POST'])
 @jwt_required()
 def subs():
+    # Select all reminders of user
     query = select(Subscriptions).filter_by(user_id=current_user.id).order_by(Subscriptions.end_time)     # type: ignore
     trs = db.session.execute(query).scalars().all()
 
@@ -25,12 +36,23 @@ def subs():
     ]
     return jsonify(trs_list), 200
 
+# Route for retrieving updating reminder
+# Return a dict
+# @params
+#   name: string
+#   noti_id: string
+#   start_time: string in isoformat
+#   end_time: string in isoformat
 @auth_bp.route('/updating', methods=['POST'])
 @jwt_required()
 def updating_subs():
+    # @params
+    #   id: int
     data = request.get_json()
 
     subs_id = int(data.get('id'))
+
+    # Select the updating reminder
     query = select(Subscriptions).filter_by(id=subs_id)
     trn = db.session.execute(query).scalars().one_or_none()
     if trn is None:

@@ -5,16 +5,25 @@ from app.models import Expenses, ExpenseTypes, CurrencyTypes
 from datetime import datetime
 from sqlalchemy import update, delete
 
+# Create a blueprint
 auth_bp = Blueprint('expense_action', __name__, url_prefix='/expenses/action')
 
+# List of allowed expense types and currencies
 ALLOWED_CATEGORIES = {e.value for e in ExpenseTypes}  # type: ignore
 ALLOWED_CURRENCIES = {c.value for c in CurrencyTypes} # type: ignore
 
-# route to retrieve personal data from db
+# Route to add new expense
+# Return status only (201, 400, 500)
 @auth_bp.route('/add', methods=['POST'])
 @jwt_required()
 def add_expense():
-    
+    # @params
+    #   category: string
+    #   optional_cat: string
+    #   amount: float
+    #   currency: string
+    #   description: string
+    #   time: string in isoformat
     data = request.get_json()
 
     category = data.get('category')
@@ -30,10 +39,12 @@ def add_expense():
     if currency not in ALLOWED_CURRENCIES:
         return jsonify({ 'message': 'Unknown currency' }), 400
 
+    # Convert string to custom data type
     currency = CurrencyTypes(currency) # type: ignore
     description = data.get('description')
     time = datetime.fromisoformat(data.get('time')).date()
 
+    # Check for compulsory fields
     if not category or not amount or not currency or not time:
         return jsonify({ 'message': 'Missing values' }), 400
 
@@ -56,9 +67,19 @@ def add_expense():
         db.session.rollback()
         return jsonify({'message': 'Database error'}), 500
 
+# Route to update expense
+# Return status only (201, 400, 404, 500)
 @auth_bp.route('/update', methods=['POST'])
 @jwt_required()
 def update_expense():
+    # @params
+    #   id: int
+    #   category: string
+    #   optional_cat: string
+    #   amount: float
+    #   currency: string
+    #   description: string
+    #   time: string in isoformat
     data = request.get_json()
 
     id = data.get('id')
@@ -75,11 +96,13 @@ def update_expense():
     if currency not in ALLOWED_CURRENCIES:
         return jsonify({ 'message': 'Unknown currency' }), 400
 
+    # Convert string to custom data type
     currency = CurrencyTypes(currency) # type: ignore
     
     description = data.get('description')
     time = datetime.fromisoformat(data.get('time')).date()
 
+    # Check for compulsory fields
     if not category or not amount or not currency or not time:
         return jsonify({ 'message': 'Missing values' }), 400
 
@@ -93,6 +116,8 @@ def update_expense():
             'description':      description,          
             'time':             time,                        
         }
+
+        # Update expense based on expense id and user id
         query = (
             update(Expenses)
             .where(Expenses.id == id)
@@ -112,10 +137,13 @@ def update_expense():
         db.session.rollback()
         return jsonify({'message': 'Database error'}), 500    
 
-
+# Route to delete expense
+# Return status only (201, 500)
 @auth_bp.route('/delete', methods=['POST'])
 @jwt_required()
 def delete_expense():
+    # @params
+    #   id: int
     data = request.get_json()
 
     id = int(data.get('id'))

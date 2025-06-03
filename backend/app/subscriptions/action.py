@@ -5,15 +5,25 @@ from app.models import Subscriptions
 from datetime import datetime
 from sqlalchemy import update, delete
 
+# Create a blueprint
 auth_bp = Blueprint('subs_action', __name__, url_prefix='/subscriptions/action')
 
+# Route for adding new reminder
+# Return only status (201, 400, 500)
 @auth_bp.route('/add', methods=['POST'])
 @jwt_required()
 def add_subs():
+    # @params
+    #   name: string
+    #   noti_id: string
+    #   start_time: string in isoformat
+    #   end_time: string in isoformat
     data = request.get_json()
 
     name = data.get('name')
     noti_id = data.get('noti_id')
+
+    # Convert to date object
     start_time = datetime.fromisoformat(data.get('start_time')).date()
     end_time = datetime.fromisoformat(data.get('end_time')).date()
 
@@ -35,15 +45,25 @@ def add_subs():
         print("DB Error:", e)
         db.session.rollback()
         return jsonify({'message': 'Database error'}), 500
-    
+
+# Route for updating reminder
+# Return only status (201, 400, 404, 500)    
 @auth_bp.route('/update', methods=['POST'])
 @jwt_required()
 def update_subs():
+    # @params
+    #   id: int
+    #   name: string
+    #   noti_id: string
+    #   start_time: string in isoformat
+    #   end_time: string in isoformat
     data = request.get_json()
 
     id = data.get('id')
     noti_id = data.get('noti_id')
     name = data.get('name')
+
+    # Convert to date object
     start_time = datetime.fromisoformat(data.get('start_time')).date()
     end_time = datetime.fromisoformat(data.get('end_time')).date()
 
@@ -75,11 +95,16 @@ def update_subs():
         print("DB Error:", e)
         db.session.rollback()
         return jsonify({'message': 'Database error'}), 500
-    
+
+# Route for deleting reminder
+# Return only status (201, 500)    
 @auth_bp.route('/delete', methods=['POST'])
 @jwt_required()
 def delete_subs():
+    # @params
+    #   id: int
     data = request.get_json()
+
     id = int(data.get('id'))
     try:
         query = delete(Subscriptions).where(Subscriptions.id == id)

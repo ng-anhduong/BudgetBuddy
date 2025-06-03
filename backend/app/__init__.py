@@ -6,10 +6,12 @@ from .models import User
 
 def create_app():
     app = Flask(__name__)
+
+    # Allowing to send data back and forth
     CORS(app, supports_credentials=True)
     app.config.from_object(Config)
    
-    # initialization
+    # Initialization
     db.init_app(app)
     jwt.init_app(app)
 

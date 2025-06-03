@@ -4,13 +4,19 @@ from app.extension import db
 from app.models import CurrencyTypes, User
 from sqlalchemy import update, delete
 
+# Create a blueprint
 auth_bp = Blueprint('profile_action', __name__, url_prefix='/profile/action')
 
+# List of allowed currencies
 ALLOWED_CURRENCIES = {c.value for c in CurrencyTypes}   # type: ignore
 
+# Route for updating currency preference
+# Return status only (201, 400, 404, 500)
 @auth_bp.route('/currency', methods =['POST'])
 @jwt_required()
 def set_profile_currency():
+    # @params
+    #   currency: string
     data = request.get_json()
 
     currency = data.get('currency')
@@ -18,7 +24,7 @@ def set_profile_currency():
     if currency is None:
         pass
 
-    # check for user abuse or frontend error
+    # Check and convert string to custom data type
     elif currency not in ALLOWED_CURRENCIES:
         return jsonify({ 'message': 'Unknown currency' }), 400
     currency = CurrencyTypes(currency) # type: ignore
