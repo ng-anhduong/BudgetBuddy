@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Image, TouchableOpacity, StyleSheet, ActivityIndicator, Text, Platform, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import createStyles from "./style";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { useUsername } from "@/hooks/data";
 import * as Notifications from 'expo-notifications';
