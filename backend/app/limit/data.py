@@ -117,6 +117,9 @@ def updating_limit():
     # Select the monthly limit with the same id
     query = select(MonthlyLimit).filter_by(id=limit_id)
     lim = db.session.execute(query).scalars().one_or_none()
+
+    # Convert to string list
+    types=[val.value for val in lim.types] # type: ignore
     if lim is None:
         return jsonify({"message":"Unauthorized"}), 400
     
@@ -124,5 +127,5 @@ def updating_limit():
             'id':           lim.id,
             'amount':       lim.amount,
             'currency':     lim.currency.value,     #type: ignore
-            'types':        lim.types,
+            'types':        types,
         }), 200 
