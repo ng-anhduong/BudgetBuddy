@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, ActivityIndicator, Text, FlatList, View, Pressable, StyleSheet, } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Picker } from "@react-native-picker/picker";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { useMonthlyLimits, useCurrencyTypes, useCurrencyPreference } from "@/hooks/data";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function AllLimits() {
     // search for params: currency when navigate to this screen
@@ -12,21 +12,6 @@ export default function AllLimits() {
 
     // set visible currency variable
     const [currency, setCurrency] = useState("");
-
-    // load user's preference 
-    const { data: preferenceCurrency, loading: preferenceCurrencyLoading } = useCurrencyPreference();
-
-    // set initial value to user's preference
-    useEffect(()=>{
-        if(!preferenceCurrencyLoading) {
-            setCurrency(preferenceCurrency)
-        }
-    }, [preferenceCurrencyLoading])
-
-    const router = useRouter();
-    const [loaded, error] = useFonts({        
-        Inter_500Medium,
-    })
 
     /* Fetch data based on user's currency preference
     @params
@@ -36,7 +21,31 @@ export default function AllLimits() {
         percentage: float rounded to 2 decimal point
         total: float rounded to 2 decimal point
         types: list of string (each string is an expense type)*/  
-    const {data: Limits, loading: limitLoading} = useMonthlyLimits({currency: cur});
+    const {data: Limits, loading: limitLoading, refetch: refetchLimit} = useMonthlyLimits({currency: cur});
+
+    // load user's preference 
+    const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
+
+    // Reload whenever access this screen
+      useFocusEffect(
+        React.useCallback(() => {
+          refetchCurrency();
+          refetchLimit({currency: cur});
+        }, [refetchCurrency])
+      );
+    
+
+    // set initial value to user's preference
+    useEffect(()=>{
+        if(!preferenceCurrencyLoading) {
+            setCurrency(preferenceCurrency)
+        }
+    }, [preferenceCurrencyLoading, preferenceCurrency])
+
+    const router = useRouter();
+    const [loaded, error] = useFonts({        
+        Inter_500Medium,
+    })
 
     // fetch all CurrencyTypes (return a list of string)
     const {data: currencyTypes, loading: currencyLoading} = useCurrencyTypes();
@@ -107,7 +116,12 @@ export default function AllLimits() {
             }
             
         />
+        
     </View>
+      <Button 
+          title="Add new limit" 
+          onPress={() => router.replace('/(tabs)/monthly_limit/add') }
+      />
       <FlatList
         data={Limits}
         renderItem={renderItem}

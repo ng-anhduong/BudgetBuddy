@@ -15,7 +15,7 @@ export default function TabsLayout() {
           height: 70, 
           paddingBottom: 5,
         },
-        unmountOnBlur: false,
+        unmountOnBlur: true,
       }}
     >
       <Tabs.Screen
@@ -51,6 +51,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="bell" size={size} color={color} />
           ),
+          unmountOnBlur: true
         }}
       />
 
@@ -63,6 +64,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="line-chart" size={size} color={color} />
           ),
+          unmountOnBlur: true
         }}
       />
 
@@ -73,6 +75,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="user" size={size} color={color} />
           ),
+          unmountOnBlur: true
         }}
       />
       

@@ -6,29 +6,38 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Picker } from "@react-native-picker/picker";
 import { useExpenses, useCurrencyTypes, useCurrencyPreference } from '@/hooks/data';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function AllExpenses() {
   // search for params: currency when navigate to this screen
   const { cur } = useLocalSearchParams();
 
   // fetch data based on user's currency preference
-  const { data: expenses, loading: expenseLoading } = useExpenses({currency: cur})
+  const { data: expenses, loading: expenseLoading, refetch: refetchExpenses } = useExpenses({currency: cur})
 
   // fetch all CurrencyTypes
   const { data: currencyTypes, loading: currencyLoading } = useCurrencyTypes();
 
   // load user's preference 
-  const { data: preferenceCurrency, loading: preferenceCurrencyLoading } = useCurrencyPreference();
+  const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
 
   // set visible currency variable
   const [currency, setCurrency] = useState("");
 
+  // Reload whenever access this screen
+    useFocusEffect(
+      React.useCallback(() => {
+        refetchExpenses({currency: cur});
+        refetchCurrency();
+      }, [refetchExpenses, refetchCurrency])
+    );
+  
   // set initial value to user's preference
   useEffect(()=>{
     if(!preferenceCurrencyLoading) {
       setCurrency(preferenceCurrency)
     }
-  },[preferenceCurrencyLoading])
+  },[preferenceCurrencyLoading, preferenceCurrency])
 
   const router = useRouter();
   const [query, setQuery] = useState('');

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ActivityIndicator,
   Text,
@@ -17,6 +17,8 @@ import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
 import { GlobalStyles as GS } from '@/constants/GlobalStyles';
 import { useAddExpense } from '@/hooks/crud';
 import { useExpenseForm } from '@/hooks/expenseForm';
+import { useCurrencyPreference } from '@/hooks/data';
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function AddExpenseModal({ visible, onClose }) {
   const router = useRouter();
@@ -49,6 +51,20 @@ export default function AddExpenseModal({ visible, onClose }) {
     load2,
     submit: addExpense,
   } = useExpenseForm(add);
+
+  // Reload whenever access this screen
+  const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
+  useFocusEffect(
+      React.useCallback(() => {
+        refetchCurrency();
+      }, [refetchCurrency])
+    );
+
+  useEffect(()=>{
+    if(!preferenceCurrencyLoading) {
+      setCurrency(preferenceCurrency)
+    }
+  },[preferenceCurrencyLoading, preferenceCurrency])
 
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);

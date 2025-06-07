@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,23 +10,32 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // for the floating "+" button
 import { useRouter } from 'expo-router';
-import { useExpenses, useNewestExpenses, useUsername } from '@/hooks/data';
+import { useNewestExpenses, useUsername } from '@/hooks/data';
+import { useFocusEffect } from "@react-navigation/native";
 import AddExpenseModal from './add'; 
 
 export default function ExpensesScreen() {
   const router = useRouter();
   const [addVisible, setAddVisible] = useState(false);
 
-  /* fetch user latest expenses
+  /* Fetch user latest expenses
   @params
     total: float 2 decimal point,
     currency: string 3 characters,
     newestExpenses: list of 5 newest expenses,
   */
-  const { data: expenses, loading } = useNewestExpenses();
-
+  const { data: expenses, loading, refetch: refetchExpense } = useNewestExpenses();
+  
   // Fetch username
-  const {data: username, usernameLoading: loadUsername} = useUsername();
+  const { data: username, usernameLoading: loadUsername, refetch: refetchUsername } = useUsername();
+
+  // Reload whenever access this screen once
+  useFocusEffect(
+    React.useCallback(() => {
+      refetchExpense();
+      refetchUsername();
+    }, [refetchExpense, refetchUsername])
+  );
 
   if (loading || loadUsername) {
     return (
