@@ -1,7 +1,7 @@
 from flask import jsonify, request, Blueprint
 from flask_jwt_extended import jwt_required, current_user
 from app.extension import db, FINANCE_DATA
-from app.models import CurrencyTypes, Group
+from app.models import CurrencyTypes, Group, User
 from sqlalchemy import select
 
 # Create a blueprint
@@ -34,6 +34,8 @@ def all_joined_groups():
 #    name: string
 #    group_id: string
 #    members: list of string
+#    history: list of group expenses
+#    settlements: list of settlements have been made
 @auth_bp.route('/current', methods=['POST'])
 @jwt_required()
 def group_information():
@@ -50,10 +52,62 @@ def group_information():
         members.append(u.username)
     members.sort()
 
+    # all history
+    history = []
+    for e in group.history:
+        # skip if already settled
+        if e.settled:
+            continue
+        # create an array of all payees
+        temp = []
+        for owe in e.owes:
+            payee = User.query.filter_by(id = owe.payee_id).first()
+            # if that account no longer exist, skip
+            if not payee:
+                continue
+            temp.append({
+                'name': payee.username,
+                'amount': owe.amount,
+                'currency': owe.currency.value,
+                'settled': owe.settled
+            })
+        temp = sorted(temp, key=lambda x: x['name']) 
+        history.append({
+            'type': "expense",
+            'id': e.id,
+            'payer': current_user.username,
+            'amount':round(float(e.amount), 2),
+            'currency': e.currency.value,
+            'note': e.note,
+            'time': e.created_at.isoformat(),
+            'payees': temp
+        })
+    history = sorted(history, key=lambda x: x['time'], reverse=True)
+
+
+    # all settlements have been made
+    settlements=[]
+    for s in group.settlements:
+        payer = User.query.filter_by(id = s.payer_id).first()
+        payee = User.query.filter_by(id = s.payee_id).first()
+        # skip if either one of 2 account does not exist
+        if not payee or not payer:
+            continue
+        settlements.append({
+            'type': "settlement",
+            'payer': payer.username,
+            'payee': payee.username,
+            'amount': round(float(s.amount), 2),
+            'currency': s.currency.value,
+            'time': s.created_at.isoformat(),
+        })
+
     return  jsonify({
         'name': group.name,
         'group_id': group.group_id,
-        'members': members
+        'members': members,
+        'history': history,
+        'settlements': settlements
     }), 201
 
     
