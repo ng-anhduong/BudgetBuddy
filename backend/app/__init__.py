@@ -21,9 +21,10 @@ def create_app():
     from app.subscriptions import blueprints as subscriptions_bps
     from app.limit import blueprints as limit_bps
     from app.profile import blueprints as profile_bps
+    from app.analytics import blueprints as analytics_bps
     
     # Adding all the blueprints
-    all_blueprints = auth_bps + expenses_bps + subscriptions_bps + limit_bps + profile_bps
+    all_blueprints = auth_bps + expenses_bps + subscriptions_bps + limit_bps + profile_bps + analytics_bps
 
     for bp in all_blueprints:
         app.register_blueprint(bp) 
