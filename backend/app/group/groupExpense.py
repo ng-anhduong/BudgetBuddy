@@ -1,9 +1,9 @@
 from flask import jsonify, request, Blueprint
 from flask_jwt_extended import jwt_required, current_user
 from app.extension import db
-from app.models import Group, CurrencyTypes, GroupExpenseOwe, GroupExpenses, User
-from datetime import datetime
-from sqlalchemy import update, delete
+from app.models import Group, CurrencyTypes, GroupExpenseOwe, GroupExpenses, User, Settlement
+from datetime import datetime, date
+from sqlalchemy import update, delete, or_
 import string, random
 
 # Create a blueprint
@@ -91,3 +91,95 @@ def add_group_expense():
         db.session.rollback()
         return jsonify({'message': 'Database error'}), 500  
 
+# Route to create a settlement
+# Return status only (201, 400, 404)
+@auth_bp.route('/settle', methods=['POST'])
+@jwt_required()
+def settle():
+    # @params
+    # payer: string
+    # payee: current_user
+    # group_id: string
+    # amount: float
+    # currency: string
+    data=request.get_json() or {}
+    payer = data.get('payer')
+    group_id = data.get('group_id')
+    amount = data.get('amount')
+    currency = data.get('currency')
+    time = date.today()
+
+    if not payer or not amount or not currency or not time:
+        return jsonify({ 'message': 'Missing values' }), 400
+
+    payer = User.query.filter_by(username = payer).first()
+    if not payer:
+        return jsonify({'message': 'User not found'}), 404
+    
+    if currency not in ALLOWED_CURRENCIES:
+        return jsonify({ 'message': 'Unknown currency' }), 400
+    
+    currency = CurrencyTypes(currency) # type: ignore
+    
+    try:
+        amount = float(amount)
+    except ValueError:
+        return jsonify({'message': 'Invalid amount'}), 400
+    
+    group = Group.query.filter_by(group_id = group_id).first()
+    if not group:
+        return jsonify({'message': 'Group not found'}), 404
+    
+    # Set all expenses where user is payee and payer is payer settled = True
+    ges = GroupExpenses.query.filter_by(group_id=group.id).filter_by(payer_id=payer.id).all()
+    for ge in ges:
+        for geo in ge.owes:
+            if geo.payee_id == current_user.id:
+                geo.settled=True
+                break
+    
+    # Set all expenses where user is payer and payer is payee settled = True
+    ges = GroupExpenses.query.filter_by(group_id=group.id).filter_by(payer_id=current_user.id).all()
+    for ge in ges:
+        for geo in ge.owes:
+            if geo.payee_id == payer.id:
+                geo.settled=True
+                break 
+    
+    # Set all expenses where all the payees has settled: settled = True
+    ges = (
+        GroupExpenses.query
+        .filter(
+            GroupExpenses.group_id == group.id,
+            or_(
+                GroupExpenses.payer_id == current_user.id,
+                GroupExpenses.payer_id == payer.id
+            )
+        )
+        .all()
+    )
+    for ge in ges:
+        temp = True
+        for geo in ge.owes:
+            temp = temp and geo.settled
+        if temp == True :
+            ge.settled = True 
+
+    try:
+        # Add new settlement
+        settlement = Settlement(
+            group_id = group.id,            # type: ignore
+            payer_id = current_user.id,     # type: ignore
+            payee_id = payer.id,            # type: ignore
+            amount = amount,                # type: ignore
+            currency = currency,            # type: ignore
+            created_at = time               # type: ignore
+        )
+
+        db.session.add(settlement)
+        db.session.commit()
+        return jsonify({'message': 'Added new settlement'}), 201
+    except Exception as e:
+        print("DB Error:", e)
+        db.session.rollback()
+        return jsonify({'message': 'Database error'}), 500 
