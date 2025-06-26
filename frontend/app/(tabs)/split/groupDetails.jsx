@@ -169,6 +169,11 @@ export default function GroupDetails() {
               <Ionicons name="add-outline" size={32} color="#fff" />
             </TouchableOpacity>
             <Button 
+                title="See my owes" 
+                onPress={() => router.replace({ pathname: '/(tabs)/split/owes', params: { id: id } })}
+                style = {styles.saveButton}
+            />
+            <Button 
                 title="Leave group" 
                 onPress={onButtonPress} 
                 style = {styles.saveButton}

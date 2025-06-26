@@ -17,6 +17,7 @@ export function useUpdatingLimit(dict)          {return getData(`${API_BASE}/lim
 export function useCurrencyPreference()         {return getData(`${API_BASE}/profile/data/currency`)}
 export function useGroupNames()                 {return getData(`${API_BASE}/group/data/all`)}
 export function useGroupDetails(dict)           {return getData(`${API_BASE}/group/data/current`, dict)}
+export function useGroupOwes(dict)              {return getData(`${API_BASE}/group/data/owes`, dict)}
 
 function getData(api, dict = null) {
     const [data, setData] = useState([]);
