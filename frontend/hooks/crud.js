@@ -67,6 +67,13 @@ export function useLeaveGroup() {
     )
 }
 
+export function useAddGroupExpense() {
+    return useAction(
+        `${API_BASE}/group/groupExpense/add`, 
+        "Successfully added",
+    )
+}
+
 function useAction(api, message) {
     const refreshToken = useRefreshToken();
 
