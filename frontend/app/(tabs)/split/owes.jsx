@@ -13,12 +13,13 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useGroupOwes } from '@/hooks/data';
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
 import { useFocusEffect } from "@react-navigation/native";
-
+import { useSettleGroupExpense } from '@/hooks/crud';
 
 export default function GroupOwes() {
   // ─── Hooks & State (always at top) ───────────────────────────────────────────
   const { id } = useLocalSearchParams();
   const router = useRouter();
+  const settle = useSettleGroupExpense();
   const {data: owes, loading, refetch} = useGroupOwes({group_id: id});
   // Font loading
   const [loaded, error] = useFonts({ Inter_500Medium });
@@ -38,7 +39,7 @@ export default function GroupOwes() {
             </View>
           );
         }
-
+      
     //@params
     //   name: string
     //   amount: float
@@ -57,9 +58,24 @@ export default function GroupOwes() {
             }]}>
             {item.owe 
                 ?
-                <Text style={styles.category}>
-                    You owe {item.name} {item.amount} {item.currency}
-                </Text>
+                <View
+                  style= {{
+                    flex:1,
+                    flexDirection: 'row',
+                  }}>
+                  <Text style={styles.category}>
+                      You owe {item.name} {item.amount} {item.currency}
+                  </Text>
+                  <Button title="settle"  onPress={async ()=>{
+                    await settle({
+                      payer: item.name,
+                      group_id: id,
+                      amount: item.amount,
+                      currency: item.currency,
+                    })
+                    router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })
+                  }} />
+                </View>
                 :
                 <Text style={styles.category}>
                     {item.name} owes you {item.amount} {item.currency}

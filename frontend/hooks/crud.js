@@ -74,6 +74,13 @@ export function useAddGroupExpense() {
     )
 }
 
+export function useSettleGroupExpense() {
+    return useAction(
+        `${API_BASE}/group/groupExpense/settle`, 
+        "Successfully settled",
+    )
+}
+
 function useAction(api, message) {
     const refreshToken = useRefreshToken();
 
