@@ -68,48 +68,44 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
             onChangeText={setNote}
           />
           <View
-          style={{
-            flex:1,
-            flexDirection:'row',
-            justifyContent:'space-between',
-            alignItems:'center'
-          }}>
-            <View
-            style={{ flex: 1, marginRight: 8 }}>
-            {/* Amount */}
-          <Text style={[GS.footerText, styles.label]}>Amount</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, }}>
-            <TextInput
-              style={[GS.input, { width:'100%' }]}
-              placeholder="0.00"
-              value={amount}
-              keyboardType="decimal-pad"
-              onChangeText={setAmount}
-            />
-          </View>
-          </View>
-          <View style={{width:100}}>
-          {/* Currency */}
-          <Text style={[GS.footerText, styles.label]}>Currency</Text>
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={currency}
-              onValueChange={setCurrency}
-              mode="dropdown"
-              style={styles.picker}
-              dropdownIconColor="#666"
-            >
-              {currency_types.map((c) => (
-                <Picker.Item key={c} label={c} value={c} />
-              ))}
-            </Picker>
-            {Platform.OS === 'web' && (
-              <View style={styles.webArrow}>
-                <Text style={{ color: '#666', fontSize: 12 }}>▼</Text>
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
+            {/* Amount field takes 65% of the space, with a little right margin */}
+            <View style={{ flex: 0.65, marginRight: 8 }}>
+              <Text style={[GS.footerText, styles.label]}>Amount</Text>
+              <TextInput
+                style={GS.input}
+                placeholder="0.00"
+                value={amount}
+                keyboardType="decimal-pad"
+                onChangeText={setAmount}
+              />
+            </View>
+
+            {/* Currency field takes the rest (35%) */}
+            <View style={{ flex: 0.35 }}>
+              <Text style={[GS.footerText, styles.label]}>Currency</Text>
+              <View style={styles.pickerWrapper}>
+                <Picker
+                  selectedValue={currency}
+                  onValueChange={setCurrency}
+                  style={styles.picker}
+                  dropdownIconColor="#666"
+                >
+                  {currency_types.map(c => (
+                    <Picker.Item key={c} label={c} value={c} />
+                  ))}
+                </Picker>
+                {Platform.OS === 'web' && (
+                  <View style={styles.webArrow}>
+                    <Text style={{ color: '#666', fontSize: 12 }}>▼</Text>
+                  </View>
+                )}
               </View>
-            )}
-          </View>
-          </View>
+            </View>
           </View>
 
           {/* Date */}
@@ -167,7 +163,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
                       <Picker.Item key={m} label={m} value={m} />
                     ))}
                 </Picker>
-                 </View>
+                </View>
                  <View style={{width: '35%', height: '100%',}}>   
                     <TextInput
                       style={{height: '100%', textAlign: 'center'}}
@@ -180,7 +176,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
                  <View style={{width: '10%', height: '100%',}}>
                     <Button title="–" onPress={() => handleRemoveRow(idx)} />
                   </View>
-              </View>
+              </View> 
             ))}
 
             

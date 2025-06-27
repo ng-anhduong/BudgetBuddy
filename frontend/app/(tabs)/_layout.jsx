@@ -1,9 +1,10 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -12,8 +13,8 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: { 
           backgroundColor: '#fff',
-          height: 70, 
-          paddingBottom: 5,
+          height: 70 + insets.bottom, 
+          paddingBottom: insets.bottom,
         },
         unmountOnBlur: true,
       }}
