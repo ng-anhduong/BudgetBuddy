@@ -17,6 +17,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AddGroupExpense from './addExpense';
+import { GlobalStyles as GS } from '@/constants/GlobalStyles';
 
 export default function GroupDetails() {
   // ─── Hooks & State (always at top) ───────────────────────────────────────────
@@ -130,7 +131,10 @@ export default function GroupDetails() {
   return (
     <>
         <View style={styles.container}>
-            <Text style={styles.title}>{details.name} </Text>
+            <Ionicons name="arrow-back" size={24} color="black" style={{position: 'absolute', top: 40, left: 20}}
+            onPress = {() => router.replace('/(tabs)/user/profile')}
+          />
+            <Text style={[styles.title, {paddingTop: -20}]}>{details.name} </Text>
             <Text style={styles.title}>#{details.group_id}</Text>
             <View style={{
               height:200,
@@ -155,6 +159,11 @@ export default function GroupDetails() {
                 contentContainerStyle={{ paddingBottom: 20 }}
             />
             </View>
+            <TouchableOpacity 
+              onPress={() => router.replace({ pathname: '/(tabs)/split/owes', params: { id: id } })}
+             style={[GS.button, { backgroundColor: '#ddd' }]}>
+              <Text style={GS.buttonText}>See my owes</Text>
+            </TouchableOpacity>
             <FlatList
                 data={details.settlements.concat(details.history)}
                 renderItem={renderHistory}
@@ -169,18 +178,8 @@ export default function GroupDetails() {
               <Ionicons name="add-outline" size={32} color="#fff" />
             </TouchableOpacity>
             <Button 
-                title="See my owes" 
-                onPress={() => router.replace({ pathname: '/(tabs)/split/owes', params: { id: id } })}
-                style = {styles.saveButton}
-            />
-            <Button 
                 title="Leave group" 
                 onPress={onButtonPress} 
-                style = {styles.saveButton}
-            />
-            <Button 
-                title="Back" 
-                onPress={() => router.replace('/(tabs)/split')} 
                 style = {styles.saveButton}
             />
             <AddGroupExpense visible={addVisible} onClose={() => setAddVisible(false)} data={JSON.stringify(details.members)} group_id={id}/>

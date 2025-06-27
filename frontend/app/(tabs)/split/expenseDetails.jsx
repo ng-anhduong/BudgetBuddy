@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function GroupDetails() {
   // ─── Hooks & State (always at top) ───────────────────────────────────────────
@@ -57,6 +58,9 @@ export default function GroupDetails() {
   return (
     <>
         <View style={styles.container}>
+          <Ionicons name="arrow-back" size={24} color="black" style={{paddingRight: '24%',}}
+            onPress={() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: group_id } })}
+          />
             <Text style={styles.title}>{curr.note} </Text>
             <Text style={styles.title}>{curr.payer} paid {curr.amount} {curr.currency} </Text>
             <Text style={styles.title}> on {`${day} ${month}, ${year}`} </Text>
@@ -66,11 +70,6 @@ export default function GroupDetails() {
                 keyExtractor = {(item, index) => index.toString()}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 20 }}
-            />
-            <Button 
-                title="Back" 
-                onPress={() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: group_id } })} 
-                style = {styles.saveButton}
             />
         </View>
         </>

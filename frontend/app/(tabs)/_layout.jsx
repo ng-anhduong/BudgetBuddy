@@ -35,17 +35,6 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="stats"
-        options={{
-          title: 'Statistics',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="bar-chart" size={size} color={color} />
-          ),
-          unmountOnBlur: true,
-        }}
-      />
-
-      <Tabs.Screen
         name="reminders"
         options={{
           title: 'Reminders',

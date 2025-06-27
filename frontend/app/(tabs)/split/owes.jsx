@@ -14,6 +14,7 @@ import { useGroupOwes } from '@/hooks/data';
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
 import { useFocusEffect } from "@react-navigation/native";
 import { useSettleGroupExpense } from '@/hooks/crud';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function GroupOwes() {
   // ─── Hooks & State (always at top) ───────────────────────────────────────────
@@ -90,6 +91,9 @@ export default function GroupOwes() {
   return (
     <>
         <View style={styles.container}>
+          <Ionicons name="arrow-back" size={24} color="black" style={{paddingRight: '24%',}}
+            onPress={() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })}
+          />
             <Text style={styles.title}>List of owes</Text>
             <FlatList
                 data={owes}
@@ -97,12 +101,6 @@ export default function GroupOwes() {
                 keyExtractor = {(item, index) => index.toString()}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 20 }}
-            />
-        
-            <Button 
-                title="Back" 
-                onPress={() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })} 
-                style = {styles.saveButton}
             />
         </View>
         </>
