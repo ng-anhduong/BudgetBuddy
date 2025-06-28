@@ -49,6 +49,7 @@ export default function ExpensesScreen() {
 
   // 5) Render a single transaction row
   const renderItem = ({ item, index }) => {
+    // Format the date to DD/MM/YYYY
     const itemDate = new Date(item.time);
     const day = itemDate.getDate().toString().padStart(2, '0');
     const month = (itemDate.getMonth() + 1).toString().padStart(2, '0');
@@ -57,6 +58,8 @@ export default function ExpensesScreen() {
     const pastelColors = ['#E3F2FD', '#E8F5E9', '#FFF3E0', '#F3E5F5', '#FFEBEE'];
     const bgColor = pastelColors[index % pastelColors.length];
 
+    // If the category is "Other" and optional_cat is provided, use optional_cat as title
+    // Otherwise, use the category as title of the transaction card
     const title =
       item.category === 'Other' && item.optional_cat
         ? item.optional_cat
@@ -129,13 +132,14 @@ export default function ExpensesScreen() {
         )}
       />
 
-      {/* ── 4) “See Full History” Link (Below the 5 Items) ─────────────────────────── */}
+      {/* ── 4) “See Full History” button (Below the 5 Items) ─────────────────────────── */}
       <TouchableOpacity
         onPress={() => router.push('/(tabs)/personal_expenses/history')}
-        style={styles.seeHistoryContainer}
+        style={styles.historyButton}
       >
-        <Text style={styles.seeHistoryText}>
-          See full history or edit an expense? Click here!
+        <Ionicons name="time-outline" size={22} color="#fff" />
+        <Text style={styles.historyText}>
+          See full history
         </Text>
       </TouchableOpacity>
 
@@ -157,7 +161,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    paddingTop: 40,
+    paddingTop: 60,
     paddingHorizontal: 16,
   },
   header: {
@@ -186,11 +190,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-  fontSize: 24,
-  fontWeight: '700',
-  marginBottom: 12,
-  color: '#000',
-  textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 12,
+    color: '#000',
+    textAlign: 'center',
   },
 
   alertBlock: {
@@ -212,7 +216,7 @@ const styles = StyleSheet.create({
 
   // ── Summary Card ─────────────────────────────────────────────────────────────
   summaryCard: {
-    backgroundColor: '#B3E5FC',
+    backgroundColor: '#9BE8F0',
     borderRadius: 16,
     padding: 10,
     alignItems: 'center',
@@ -281,28 +285,37 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
 
-  // ── “See Full History” Link ───────────────────────────────────────────────────
-  seeHistoryContainer: {
-    marginTop: 8,
+  historyButton: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 28,          
+    flexDirection: 'row',      // icon + text side-by-side
     alignItems: 'center',
-    marginBottom: 170, // ensure the floating button does not overlap
-  },
-  seeHistoryText: {
-    fontSize: 14,
-    color: '#007AFF',
-    textDecorationLine: 'underline',
+    alignSelf: 'center',       // centers the button in its parent
+    paddingHorizontal: 24,     // room for text
+    paddingVertical: 12,
+    marginBottom: 20,
+
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    // Android elevation
+    elevation: 5,
+    marginTop: 24,             // space above if you keep it in a column
   },
 
-  emptyText: {
-    textAlign: 'center',
-    color: '#777',
-    marginVertical: 20,
+  historyText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,             // gap between icon and text
   },
 
-  // ── Floating “+” Button ───────────────────────────────────────────────────────
+  // ── Floating "+" and see full history Button ───────────────────────────────────────────────────────
   floatingButton: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 20,
     right: 24,
     backgroundColor: '#4CAF50',
     width: 56,

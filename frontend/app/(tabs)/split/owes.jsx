@@ -111,7 +111,7 @@ export default function GroupOwes() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffde1a',
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 40,
   },

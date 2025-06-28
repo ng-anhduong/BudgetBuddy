@@ -30,11 +30,6 @@ export function useGroupNames()                 {return getData(`${API_BASE}/gro
 export function useGroupDetails(dict)           {return getData(`${API_BASE}/group/data/current`, dict)}
 export function useGroupOwes(dict)              {return getData(`${API_BASE}/group/data/owes`, dict)}
 
-// Analytics
-export function useAnalyticsExpenses(params)        {return getData(`${API_BASE}/analytics/data/expenses`, params)}
-export function useAnalyticsCategories(params)      {return getData(`${API_BASE}/analytics/data/categories`, params)}
-export function useAnalyticsBudgetsSavings(params)  {return getData(`${API_BASE}/analytics/data/budgets-savings`, params)}
-
 
 function getData(api, dict = null) {
     const [data, setData] = useState([]);

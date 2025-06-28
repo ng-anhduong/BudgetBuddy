@@ -63,12 +63,12 @@ export default function AnalyticsScreen() {
   })();
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView contentContainerStyle={styles.container}>
 
         {/* ===== Title ===== */}
         <Text style={styles.screenTitle}>Analytics</Text>
-
+        <Text style={styles.chartTitle}>Spending amount</Text>
         {/* ===== Header controls ===== */}
         <View style={styles.row}>
           <Button title="<" onPress={() => shiftDate(-1)} />
@@ -100,17 +100,15 @@ export default function AnalyticsScreen() {
               fromZero
               showValuesOnTopOfBars={false}
               chartConfig={chartCfg}
+              withInnerLines={false}                
             />
           </ScrollView>
         )}
 
+        <Text style={styles.chartTitle}>Spending categories</Text>
         {/* ===== PieChart ===== */}
         {!loading && !error && !!categories.length && (
           <>
-            <Text style={{ textAlign: "center", marginTop: 24, marginBottom: 8 }}>
-              By category
-            </Text>
-
             <PieChart
               data={categories.map((c, idx) => ({
                 name: c.category,
@@ -127,17 +125,6 @@ export default function AnalyticsScreen() {
               paddingLeft="16"
               chartConfig={{ color: () => "#000", decimalPlaces: 0 }}
             />
-
-            <View style={styles.legendWrap}>
-              {categories.map((c, idx) => (
-                <View key={c.category} style={styles.legendItem}>
-                  <View
-                    style={[styles.swatch, { backgroundColor: palette[idx % palette.length] }]}
-                  />
-                  <Text>{c.category}</Text>
-                </View>
-              ))}
-            </View>
           </>
         )}
       </ScrollView>
@@ -151,12 +138,18 @@ const chartCfg = {
   backgroundGradientTo:   "#fff",
   decimalPlaces: 0,
   barPercentage: 0.6,
-  color: () => "#4e8cff",
+  color: () => "#4b006e",
+  fillShadowGradient: '#4e8cff',
+  fillShadowGradientOpacity: 1,
   labelColor: () => "#333",
+  propsForBackgroundLines: { 
+    strokeWidth: 0.5,
+    stroke: "#d9d9d9",
+  },
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 16, paddingTop:40, },
+  container: { padding: 16, paddingTop:20, },
   screenTitle: {
     fontSize: 24,
     fontWeight: "700",
@@ -170,18 +163,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   modeTitle: { fontSize: 18, fontWeight: "600" },
-  legendWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    marginTop: 4,
-  },
-  legendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: 6,
-    marginVertical: 2,
-  },
   swatch: { width: 10, height: 10, marginRight: 4 },
+    chartTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+    textAlign: 'left',   
+    marginTop: 16,
+  },
 });
 

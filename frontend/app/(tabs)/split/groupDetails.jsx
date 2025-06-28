@@ -135,9 +135,9 @@ export default function GroupDetails() {
             onPress = {() => router.replace('/(tabs)/split')}
           />
             <Text style={[styles.title, {paddingTop: -20}]}>{details.name} </Text>
-            <Text style={styles.title}>#{details.group_id}</Text>
+            <Text style={styles.grpID}>Group code: #{details.group_id}</Text>
             <View style={{
-              height:200,
+              height: 300,
               borderRadius: 12,
               padding: 16,
               marginBottom: 12,
@@ -161,27 +161,20 @@ export default function GroupDetails() {
             </View>
             <TouchableOpacity 
               onPress={() => router.replace({ pathname: '/(tabs)/split/owes', params: { id: id } })}
-             style={[GS.button, { backgroundColor: '#ddd' }]}>
-              <Text style={GS.buttonText}>See my owes</Text>
+             style={[styles.button, { backgroundColor: '#767FA6', marginTop: 8 }]}>
+              <Text style={styles.buttonText}>See my owes</Text>
             </TouchableOpacity>
-            <FlatList
-                data={details.settlements.concat(details.history)}
-                renderItem={renderHistory}
-                keyExtractor = {(item, index) => index.toString()}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 20 }}
-            />
             <TouchableOpacity
               style={styles.floatingButton}
               onPress={() => setAddVisible(true)}
             >
               <Ionicons name="add-outline" size={32} color="#fff" />
             </TouchableOpacity>
-            <Button 
-                title="Leave group" 
+            <TouchableOpacity 
                 onPress={onButtonPress} 
-                style = {styles.saveButton}
-            />
+                style={[styles.button, { backgroundColor: '#F28589', margineTop: 8 }]}>
+                <Text style={styles.buttonText}>Leave Group</Text>
+            </TouchableOpacity>
             <AddGroupExpense visible={addVisible} onClose={() => setAddVisible(false)} data={JSON.stringify(details.members)} group_id={id}/>
         </View>
         </>
@@ -192,9 +185,9 @@ export default function GroupDetails() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffde1a',
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 60,
   },
   centered: {
     flex: 1,
@@ -248,7 +241,7 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: 'absolute',
-    top: 50,
+    bottom: 20,
     right: 24,
     backgroundColor: '#4CAF50',
     width: 56,
@@ -256,5 +249,32 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  grpID: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#003366'
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 28,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+    marginLeft: 70,
+    marginRight: 70,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

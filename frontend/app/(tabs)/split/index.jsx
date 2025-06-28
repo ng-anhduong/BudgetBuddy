@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Image, TouchableOpacity, StyleSheet, ActivityIndicator, Text, Platform, View, FlatList } from 'react-native';
+import { SafeAreaView, Image, TouchableOpacity, StyleSheet, ActivityIndicator, Text, Platform, View, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { useGroupNames } from "@/hooks/data";
 import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AddGroup from './add';
+import { G } from 'react-native-svg';
 
 export default function HomeScreen() {  
     const router = useRouter();
@@ -36,8 +37,13 @@ export default function HomeScreen() {
       }
 
     const renderItem = ({ item, index }) => {
-      const colors = ['#FFEBEE', '#E3F2FD', '#E8F5E9', '#FFF3E0', '#F3E5F5'];
-      const bgColor = colors[index % colors.length];
+      const itemDate = new Date(new Date());
+      const day = itemDate.getDate().toString().padStart(2, '0');
+      const month = (itemDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = itemDate.getFullYear();
+    
+      const pastelColors = ['#E3F2FD', '#E8F5E9', '#FFF3E0', '#F3E5F5', '#FFEBEE'];
+      const bgColor = pastelColors[index % pastelColors.length];
       return (
         <TouchableOpacity
           style={[styles.card, { backgroundColor: bgColor }]}
@@ -49,6 +55,12 @@ export default function HomeScreen() {
             <Text style={styles.category}>{item.name}</Text>
   
           </View>
+
+          <View style={styles.GroupText}>
+            <Text style={styles.grpTitle}>{item.category} </Text>
+            <Text style={styles.grpCreateDate}>{`${day}/${month}/${year}`}</Text>
+          </View>
+
         </TouchableOpacity>
       );
     };
@@ -64,7 +76,10 @@ export default function HomeScreen() {
                 renderItem={renderItem}
                 keyExtractor = {(item, index) => index.toString()}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 80 }}
+                contentContainerStyle={{ paddingBottom: 20 }}
+                ListEmptyComponent={() => (
+                  <Text style={styles.emptyText}>No recent shared expenses.</Text>
+                )}
             />
 
             <TouchableOpacity
@@ -83,9 +98,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffde1a',
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 100,
   },
   centered: {
     flex: 1,
@@ -148,4 +163,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  GroupText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flex: 1,
+    marginLeft: 16,
+  },
+  grpTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },  
+  grpCreateDate: {
+    fontSize: 12,
+    color: '#777',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#888',
+    fontSize: 16,
+  },
+  
 });
