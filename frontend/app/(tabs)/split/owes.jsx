@@ -50,43 +50,50 @@ export default function GroupOwes() {
   const renderItem = ({item, index}) => {
     const colors = ['#FFEBEE', '#E3F2FD', '#E8F5E9', '#FFF3E0', '#F3E5F5'];
     const bgColor = colors[index % colors.length];
+    if (item.owe) {
       return (
-        <View
-          style={[styles.card, { backgroundColor: bgColor }]}
-        >
-          <View style={[{
-            flexDirection: 'row', 
-            flex: 1,
-            }]}>
-            {item.owe 
-                ?
-                <View
-                  style= {{
-                    flex:1,
-                    flexDirection: 'row',
-                  }}>
-                  <Text style={styles.category}>
-                      You owe {item.name} {item.amount} {item.currency}
-                  </Text>
-                  <Button title="settle"  onPress={async ()=>{
-                    await settle({
-                      payee: item.name,
-                      group_id: id,
-                      amount: item.amount,
-                      currency: item.currency,
-                    })
-                    router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })
-                  }} />
-                </View>
-                :
-                <Text style={styles.category}>
-                    {item.name} owes you {numeral(item.amount).format('0.00 a')} {item.currency}
-                </Text>
-            }
-            
+        <View style={[styles.card, { backgroundColor: bgColor }]}>
+          <View style={styles.row}>
+            <Text
+              style={styles.category}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              You owe {item.name}{' '}
+              {numeral(item.amount).format('0,0.[00]')} {item.currency}
+            </Text>
+
+            <TouchableOpacity
+              style={styles.settleBtn}
+              onPress={async () => {
+                await settle({
+                  payee: item.name,
+                  group_id: id,
+                  amount: item.amount,
+                  currency: item.currency,
+                });
+                router.replace({
+                  pathname: '/(tabs)/split/groupDetails',
+                  params: { id },
+                });
+              }}
+            >
+              <Text style={styles.settleTxt}>Settle</Text>
+            </TouchableOpacity>
           </View>
         </View>
       );
+  }
+
+    /* creditor case */
+    return (
+      <View style={[styles.card, { backgroundColor: bgColor }]}>
+        <Text style={styles.category}>
+          {item.name} owes you{' '}
+          {numeral(item.amount).format('0,0.[00]')} {item.currency}
+        </Text>
+      </View>
+    );
   };
       
   return (
@@ -145,10 +152,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 2,
   },
-  category: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
   description: {
     fontSize: 14,
     color: '#555',
@@ -176,5 +179,31 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  settleBtn: {
+    backgroundColor: '#1976D2',   
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 18,
+    marginLeft: 30,
+  },
+  settleTxt: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+
+  category: {
+    fontSize: 16,
+    fontWeight: '600',
+    flexShrink: 1,
+    marginRight: 8,
   },
 });

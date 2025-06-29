@@ -24,7 +24,7 @@ export default function GroupDetails() {
     return null; // font not ready
   }
   const date = new Date(curr.time);
-  const day = date.getDate();
+  const day = date.toLocaleString('en-US', { day: '2-digit' });
   const month = date.toLocaleString('en-US', { month: 'short' });
   const year = date.getFullYear();
   //@params 
@@ -81,7 +81,7 @@ export default function GroupDetails() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffde1a',
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 40,
   },

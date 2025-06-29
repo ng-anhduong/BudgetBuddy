@@ -67,27 +67,32 @@ export default function GroupDetails() {
       //  currency: string,
       //  time: time string in isoformat,
       const date = new Date(item.time);
-      const day = date.getDate();
+      const day = date.toLocaleString('en-US', { day:   '2-digit' });
       const month = date.toLocaleString('en-US', { month: 'short' });
       const year = date.getFullYear();
       return (
         <View
           style={[styles.card, { backgroundColor: bgColor }]}
         >
-          <View style={[{
-            flexDirection: 'row', 
-            flex: 1,
-            }]}>
+          <View style={styles.topRow}>
             <FontAwesome name="money" size={24} color="black" />
-            <Text style={styles.category}>
-              {"  "}{item.payer} paid {item.payee} {numeral(item.amount).format('0.0 a')} {item.currency} at {`${day} ${month}, ${year}`}
-            </Text>
-            
-
+            <Text style={styles.titleText}>
+              {'  '}
+              {item.payer} paid {item.payee}
+          </Text>
+          </View>
+            <View style={styles.bottomRow}>
+              <Text style={styles.amountText}>
+                Pay amount: {numeral(item.amount).format('0,0.[00]')} {item.currency}
+              </Text>
+              <Text style={styles.dateText}>
+                {`${day} ${month}, ${year}`}
+              </Text>
           </View>
         </View>
       );
     }
+
     //@params
     //  id: int
     //  lender: string,
@@ -103,22 +108,28 @@ export default function GroupDetails() {
     //      settled: boolean
     return (
       <TouchableOpacity
-        style={[styles.card, { backgroundColor: bgColor }]}
         onPress={()=>router.replace({ 
           pathname: '/(tabs)/split/expenseDetails', 
           params: { expense: JSON.stringify(item) , group_id: id } 
         })}
       >
-        <View style={{
-          flexDirection: 'row', 
-          flexWrap: 'wrap',
-          }}>
-          <FontAwesome name="bell-o" size={24} color="black" />
-          <Text style={styles.category}>
-            {"  "}{item.note} cost {numeral(item.amount).format('0.0 a')} {item.currency}
-          </Text>
+        <View
+          style={[styles.card, { backgroundColor: bgColor }]}
+        >
+          <View style={styles.topRow}>
+            <FontAwesome name="bell-o" size={24} color="black" />
+            <Text style={styles.titleText}>
+              {"  "}{item.note}
+            </Text>
+          </View>
 
+          <View style={styles.bottomRow}>
+              <Text style={styles.amountText}>
+                Shared amount: {numeral(item.amount).format('0,0.[00]')} {item.currency}
+              </Text>
+          </View>
         </View>
+
       </TouchableOpacity>
     );
   };
@@ -134,7 +145,7 @@ export default function GroupDetails() {
             <Ionicons name="arrow-back" size={30} color="black"
               onPress = {() => router.replace('/(tabs)/split')}
             />
-            <Ionicons name="settings-outline" size={30} color="black" style ={{position: 'absolute', top: 40, right: 30}}
+            <Ionicons name="settings-outline" size={30} color="black" style ={{position: 'absolute', top: 50, right: 30}}
               onPress= {()=> router.replace({ pathname: '/(tabs)/split/members', params: { id: id } })}
             />
             <Text style={[styles.title, {paddingTop: -20}]}>{details.name} </Text>
@@ -197,7 +208,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 50,
   },
   centered: {
     flex: 1,
@@ -220,12 +231,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   card: {
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     marginBottom: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     elevation: 2,
   },
   category: {
@@ -286,5 +295,33 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '500',
+  },
+  
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,     
+  },
+
+  titleText: {
+    fontSize: 16,
+    fontWeight: '600',
+    flexShrink: 1, 
+  },
+
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  amountText: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+
+  dateText: {
+    fontSize: 14,
+    color: '#555',
   },
 });
