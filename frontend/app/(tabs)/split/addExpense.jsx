@@ -26,6 +26,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
       handleChangeRow,
       handleRemoveRow,
       onDateChange,
+      handleDivideEqually,
 
       currency_types,
 
@@ -148,6 +149,21 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Split among</Text>
               <TouchableOpacity 
+                onPress={handleDivideEqually} 
+                style={{
+                  width: 100,
+                  height: 36,
+                  borderRadius: 18,
+                  backgroundColor: '#4CAF50',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  elevation: 3,
+                }}
+                
+              >
+                <Text style={{ color: '#fff', fontSize: 12 }}>{'Divide equally'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
                 onPress={handleAddRow} 
                 style={[
                   styles.fab,
@@ -159,7 +175,12 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
               </TouchableOpacity>
             </View>
 
-            <ScrollView contentContainerStyle={{ paddingVertical: 0, maxHeight: 120 }}>
+            <ScrollView
+              style={{ maxHeight: 120 }}
+              contentContainerStyle={{ paddingVertical: 0 }}
+              keyboardShouldPersistTaps="always"
+              showsVerticalScrollIndicator={true}
+            >
               {rows.map((row, idx) => (
                 <View style={{
                   flexWrap: 'wrap', 
@@ -172,7 +193,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
                   
                   {Platform.OS === 'ios' 
                   ?<>
-                  <View key={idx} style={{width: '55%', height: '100%',}}>
+                  <View key={idx} style={{width: '55%', height: '100%',}} >
                     <ModalSelector
                       data={members
                             .filter(m => m === row.member || !selectedMembers.includes(m))
@@ -185,7 +206,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
                     />
                     </View>
                   </> 
-                  :<>
+                  :
                   <View key={idx} style={{width: '55%', height: '100%', justifyContent: 'center'}}>
                   <Picker
                     selectedValue={row.member}
@@ -204,7 +225,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
                       <Picker.Item key={m} label={m} value={m} />))}
                   </Picker>
                   </View>
-                  </>}
+                  }
                   
                   
                   <View style={{width: '35%', height: '100%',}}>   

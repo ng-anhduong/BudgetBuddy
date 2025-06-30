@@ -93,7 +93,7 @@ export default function ProfileScreen() {
         </View>
         <View style={styles.cardContainer}>
         {/* navigation */}
-        <View style={{paddingTop:20}}>
+        <View style={{paddingTop:20, width:'10%'}}>
           <Ionicons name="arrow-back" size={24} color="black" style={{paddingRight: '24%',}}
           onPress = {() => router.replace('/(tabs)/user/profile')}
         />

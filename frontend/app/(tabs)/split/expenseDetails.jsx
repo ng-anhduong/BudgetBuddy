@@ -59,9 +59,11 @@ export default function GroupDetails() {
   return (
     <>
         <View style={styles.container}>
+          <View style={{width:'10%'}}>
             <Ionicons name="arrow-back" size={24} color="black" style={{paddingTop:10,}}
             onPress={() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: group_id } })}
           />          
+          </View>
             <Text style={styles.title}>{curr.note} </Text>
             <Text style={styles.title}>{curr.lender} paid {numeral(curr.amount).format('0.0 a')} {curr.currency} </Text>
             <Text style={styles.title}> on {`${day} ${month}, ${year}`} </Text>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -33,6 +33,10 @@ export default function GroupDetails() {
         refetchDetails({group_id: id});
       }, [refetchDetails])
     );
+  useEffect(()=>{
+    refetchDetails({group_id: id});
+  },[addVisible])
+
   // ─── Early returns (now safe, because hooks are already called) ───────────────
   if (!loaded && !error) {
     return null; // font not ready
@@ -142,9 +146,12 @@ export default function GroupDetails() {
   return (
     <>
         <View style={styles.container}>
+          <View
+          style = {{width: "10%"}}>
             <Ionicons name="arrow-back" size={30} color="black"
               onPress = {() => router.replace('/(tabs)/split')}
             />
+          </View>
             <Ionicons name="settings-outline" size={30} color="black" style ={{position: 'absolute', top: 50, right: 30}}
               onPress= {()=> router.replace({ pathname: '/(tabs)/split/members', params: { id: id } })}
             />

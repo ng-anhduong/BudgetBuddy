@@ -63,9 +63,11 @@ export default function GroupDetails() {
   return (
     <>
         <View style={styles.container}>
-            <Ionicons name="arrow-back" size={24} color="black"
+          <View style = {{width:'10%'}}> 
+            <Ionicons name="arrow-back" size={30} color="black"
             onPress = {() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })}
           />
+          </View>
             <Text style={styles.grpID}>Group code: #{details.group_id}</Text>
             {/* <View style={{
               height:'50%',

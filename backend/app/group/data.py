@@ -106,7 +106,7 @@ def group_information():
             'time': e.created_at.isoformat(),
             'borrowers': temp
         })
-    history = sorted(history, key=lambda x: x['time'], reverse=True)
+    history = sorted(history, key=lambda x: (x['time'], x['id']), reverse=True)
 
 
     # all settlements have been made
@@ -118,6 +118,7 @@ def group_information():
         if not payee or not payer:
             continue
         settlements.append({
+            'id': s.id,
             'type': "settlement",
             'payer': payer.username,
             'payee': payee.username,
@@ -125,7 +126,7 @@ def group_information():
             'currency': s.currency.value,
             'time': s.created_at.isoformat(),
         })
-    settlements=sorted(settlements, key=lambda x: x['time'], reverse=True)
+    settlements=sorted(settlements, key=lambda x: x['id'], reverse=True)
 
     return  jsonify({
         'name': group.name,

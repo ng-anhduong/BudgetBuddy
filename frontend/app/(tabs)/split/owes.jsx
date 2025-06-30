@@ -50,6 +50,7 @@ export default function GroupOwes() {
   const renderItem = ({item, index}) => {
     const colors = ['#FFEBEE', '#E3F2FD', '#E8F5E9', '#FFF3E0', '#F3E5F5'];
     const bgColor = colors[index % colors.length];
+    const tday = new Date();
     if (item.owe) {
       return (
         <View style={[styles.card, { backgroundColor: bgColor }]}>
@@ -71,6 +72,7 @@ export default function GroupOwes() {
                   group_id: id,
                   amount: item.amount,
                   currency: item.currency,
+                  time: tday.toISOString(),
                 });
                 router.replace({
                   pathname: '/(tabs)/split/groupDetails',

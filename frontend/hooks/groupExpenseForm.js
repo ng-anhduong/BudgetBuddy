@@ -34,6 +34,15 @@ export function useGroupExpenseForm(group_id, members, func, id = null) {
       }
     };
 
+    const handleDivideEqually = () => {
+        const n = rows.length
+        if (n !== 0) {        
+        const total = parseFloat(amount) || 0
+        const per = (total / n).toString()
+        setRows(rows.map(r => ({ ...r, value: per })))
+        }
+    }
+
     // 2. load data hooks
     const { data: currency_types, loading: load2 }        = useCurrencyTypes();
     const { data: currency_preference, loading: load3 }   = useCurrencyPreference();
@@ -112,6 +121,7 @@ export function useGroupExpenseForm(group_id, members, func, id = null) {
         handleChangeRow,
         handleRemoveRow,
         onDateChange,
+        handleDivideEqually,
 
         currency_types,
 

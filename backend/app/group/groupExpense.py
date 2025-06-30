@@ -104,15 +104,21 @@ def settle():
     # group_id: string
     # amount: float
     # currency: string
+    # time: string in isoformat
     data=request.get_json() or {}
     payee = data.get('payee')
     group_id = data.get('group_id')
     amount = data.get('amount')
     currency = data.get('currency')
-    time = date.today()
+    time = data.get('time')
 
     if not payee or not amount or not currency or not time:
         return jsonify({ 'message': 'Missing values' }), 400
+
+    try:
+        time = datetime.fromisoformat(time).date()
+    except ValueError:
+        return jsonify({'message': 'Invalid time format'}), 400
 
     payee = User.query.filter_by(username = payee).first()
     if not payee:

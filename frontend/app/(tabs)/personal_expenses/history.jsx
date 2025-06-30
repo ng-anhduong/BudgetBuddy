@@ -110,7 +110,9 @@ export default function AllExpenses() {
           style={styles.currencyPicker}
           mode="dropdown"           // iOS shows a sheet; Android a dropdown.
           dropdownIconColor="#666"
+          
         >
+          <Picker.Item label="Select currency…" value="" color="#888" />
           {currencyTypes.map(c => (
             <Picker.Item key={c} label={c} value={c} />
           ))}
@@ -213,7 +215,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 0,            // remove default vertical padding on iOS
   },
-    currencyRow: {
+  currencyRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
@@ -223,12 +225,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
     borderRadius: 10,
     marginRight: 10,
-    height: 37,              // keeps visual balance with button
+    height: 50,
+    paddingVertical: 12,
   },
   changeBtn: {
     backgroundColor: '#4CAF50',
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 15,
     borderRadius: 10,
   },
   changeTxt: {

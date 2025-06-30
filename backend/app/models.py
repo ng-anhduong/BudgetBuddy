@@ -120,7 +120,7 @@ class Settlement(db.Model):
     payee_id:    Mapped[int]        = mapped_column(ForeignKey("user.id"),  nullable=False)
     amount:      Mapped[float]      = mapped_column(Numeric(scale=2), nullable=False)
     currency:    Mapped[str]        = mapped_column(SQLEnum(CurrencyTypes), nullable=False) # type: ignore
-    created_at:  Mapped[datetime]   = mapped_column(DateTime(timezone=True), default=datetime.now(), nullable=False)
+    created_at:  Mapped[date]        = mapped_column(Date, default=date.today(), nullable=False)
 
     # relationships
     group:      Mapped["Group"]     = relationship("Group", back_populates="settlements")
