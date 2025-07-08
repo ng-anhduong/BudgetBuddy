@@ -122,10 +122,16 @@ export default function SignUpScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => router.replace("/auth/sign_in")}>
-            <Text style={GS.footerText}>
-              Already have an account?{" "}
+            <View
+            style={{
+              flexDirection: 'row',
+              justifyContent:'center',
+            }}> 
+              <Text style={GS.footerText}>
+                Already have an account? {" "}
+              </Text>
               <Text style={GS.link}>Sign In</Text>
-            </Text>
+            </View>
           </TouchableOpacity>
         </ScrollView>
       </View>

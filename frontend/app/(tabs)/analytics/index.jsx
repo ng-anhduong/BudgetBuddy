@@ -14,6 +14,7 @@ import { useAnalytics } from "../../../hooks/useAnalytics";
 import { addDays, addMonths, format } from "date-fns";
 import { useCurrencyPreference } from "@/hooks/data";
 import { useFocusEffect } from "@react-navigation/native";
+import numeral from 'numeral';
 
 const screenW  = Dimensions.get("window").width;
 const palette  = ["#4e8cff", "#ffca3a", "#8ac926", "#ff595e", "#1982c4", "#6a4c93"];
@@ -96,11 +97,12 @@ export default function AnalyticsScreen() {
               data={{ labels, datasets: [{ data: totals }] }}
               width={Math.max(labels.length * 60, screenW - 32)}
               height={220}
-              yAxisSuffix={!currency ? ' SGD' : ' ' + currency}
+              // yAxisSuffix={!currency ? ' SGD' : ' ' + currency}
               fromZero
               showValuesOnTopOfBars={false}
               chartConfig={chartCfg}
-              withInnerLines={true}                
+              withInnerLines={true}
+                             
             />
           </ScrollView>
         )}
@@ -141,6 +143,7 @@ const chartCfg = {
   color: () => "#4b006e",
   fillShadowGradient: '#4e8cff',
   fillShadowGradientOpacity: 1,
+  formatYLabel: (val) => numeral(val).format('0.0 a'),
   labelColor: () => "#333",
   propsForBackgroundLines: { 
     strokeWidth: 0.5,

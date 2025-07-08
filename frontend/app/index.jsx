@@ -8,7 +8,7 @@ import { requestPermissions } from "@/hooks/notificationsPermissions";
 import * as Notifications from 'expo-notifications';
 import { GlobalStyles as GS } from "@/constants/GlobalStyles";
 
-export default function WelcomeScreen() {
+export default function App() {
   const router = useRouter();
   const refresh = useRefreshToken();
   const [checking, setChecking] = useState(true);

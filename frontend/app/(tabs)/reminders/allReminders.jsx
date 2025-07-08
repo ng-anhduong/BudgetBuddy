@@ -9,13 +9,13 @@ import AddReminder from './add';
 
 export default function AllReminders() {
     // Use to debug in console
-    useEffect(() => {
-      (async () => {
-          const all = await Notifications.getAllScheduledNotificationsAsync();
-          console.log('All scheduled notifications:', all);
-          //await Notifications.cancelAllScheduledNotificationsAsync();
-      })();
-    }, []);
+    // useEffect(() => {
+    //   (async () => {
+    //       const all = await Notifications.getAllScheduledNotificationsAsync();
+    //       console.log('All scheduled notifications:', all);
+    //       //await Notifications.cancelAllScheduledNotificationsAsync();
+    //   })();
+    // }, []);
 
     const [addVisible, setAddVisible] = useState(false);
 
