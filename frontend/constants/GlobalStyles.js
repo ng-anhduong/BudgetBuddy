@@ -71,4 +71,5 @@ export const GlobalStyles = StyleSheet.create({
     color: Colors.errorText,
     marginBottom: 2,
   },
+  placeholder: '#757575',
 });

@@ -68,6 +68,7 @@ export default function AddReminder({ visible, onClose }) {
             <TextInput
               style={GS.input}
               placeholder="e.g. Gym Membership"
+              placeholderTextColor={GS.placeholder}
               value={name}
               onChangeText={setName}
             />

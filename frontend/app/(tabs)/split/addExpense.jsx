@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState } from 'react';
 import { Keyboard, TouchableWithoutFeedback, TextInput, View, Text, StyleSheet, Platform, Modal, TouchableOpacity, ScrollView, Button, ActivityIndicator } from 'react-native';
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
-import { Picker } from '@react-native-picker/picker';
+import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAddGroupExpense } from "@/hooks/crud";
 import { GlobalStyles as GS } from '@/constants/GlobalStyles';
@@ -39,17 +39,22 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
 
     // Reload whenever access this screen
     const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
-    useFocusEffect(
-        React.useCallback(() => {
-          refetchCurrency();
-        }, [refetchCurrency])
-      );
-  
+    
+      /* ────────── local state for the field ────────── */
+    const [openCurrency, setOpenCurrency] = useState(false);
+      
     useEffect(()=>{
       if(!preferenceCurrencyLoading) {
         setCurrency(preferenceCurrency)
       }
     },[preferenceCurrencyLoading, preferenceCurrency])
+
+    useFocusEffect(
+      React.useCallback(() => {
+        refetchCurrency();
+      }, [refetchCurrency])
+    );
+
 
     const onSubmit = async () => {
       await submit();         // wait for submit to complete
@@ -84,50 +89,42 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
             <TextInput
               style={GS.input}
               placeholder="e.g. Dinner split"
+              placeholderTextColor={GS.placeholder}
               value={note}
               onChangeText={setNote}
             />
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}
-            >
-              {/* Amount field takes 65% of the space, with a little right margin */}
-              <View style={{ flex: 0.65, marginRight: 8 }}>
-                <Text style={[GS.footerText, styles.label]}>Amount</Text>
+
+            {/* Amount field takes 65% of the space, with a little right margin */}
+            <Text style={[GS.footerText, styles.label]}>Amount</Text>
                 <TextInput
                   style={GS.input}
                   placeholder="0.00"
+                  placeholderTextColor={GS.placeholder}
                   value={amount}
                   keyboardType="decimal-pad"
                   onChangeText={setAmount}
-                />
-              </View>
+            />
 
+            {/* Currency field takes the rest (35%) */}
+            <Text style={[GS.footerText, styles.label]}>Currency</Text>
+            <DropDownPicker
+              open={openCurrency}
+              value={currency}
 
-              {/* Currency field takes the rest (35%) */}
-              <View style={{ flex: 0.35 }}>
-                <Text style={[GS.footerText, styles.label]}>Currency</Text>
-                <View style={styles.pickerWrapper}>
-                  <Picker
-                    selectedValue={currency}
-                    onValueChange={setCurrency}
-                    style={styles.picker}
-                    dropdownIconColor="#666"
-                  >
-                    {currency_types.map(c => (
-                      <Picker.Item key={c} label={c} value={c} />
-                    ))}
-                  </Picker>
-                  {Platform.OS === 'web' && (
-                    <View style={styles.webArrow}>
-                      <Text style={{ color: '#666', fontSize: 12 }}>▼</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-            </View>
+              items={currencyTypes.map((c) => ({ label: c, value: c }))}
+              setOpen={setOpenCurrency}
+              setValue={setCurrency}    
+
+              /* ---- fixed light palette ---- */
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+              textStyle={styles.dropdownText}
+              listItemLabelStyle={styles.dropdownText}
+
+              placeholder="Select"
+              searchable
+              zIndex={10}        /* avoids overlap inside ScrollViews / modals */
+            />
 
             {/* Date */}
             <Text style={[GS.footerText, styles.label]}>Date</Text>
@@ -280,39 +277,17 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
-  // ── Picker Wrapper ───────────────────────────────────────────────────────────
-  pickerWrapper: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 20,
-    borderWidth: 1,
+  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  dropdown: {
+    backgroundColor: '#fff',
     borderColor: '#ccc',
-    marginBottom: 15,
-    overflow: 'hidden',
-    position: 'relative',
   },
-  picker: {
-    height: 50,
-    width: '100%',
+  dropdownContainer: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+  },
+  dropdownText: {
     color: '#000',
-    backgroundColor: '#f5f5f5',
-    ...Platform.select({
-      web: {
-        borderWidth: 0,
-        appearance: 'none',
-        WebkitAppearance: 'none',
-        paddingHorizontal: 12,
-      },
-      ios: {},
-      android: {},
-    }),
-  },
-  webArrow: {
-    position: 'absolute',
-    right: 12,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    pointerEvents: 'none',
   },
 
   sectionHeader: {

@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Picker } from '@react-native-picker/picker';
+import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useUpdateExpense, useDeleteExpense } from '@/hooks/crud';
 import { useExpenseForm } from '@/hooks/expenseForm';
@@ -67,6 +67,9 @@ export default function UpdateExpense() {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+    /* ────────── local state for the field ────────── */
+  const [openCurrency, setOpenCurrency] = useState(false);
+
   // ─── Early returns (now safe, because hooks are already called) ───────────────
   if (!loaded && !error) {
     return null; // font not ready
@@ -117,41 +120,42 @@ export default function UpdateExpense() {
   const pastelColors = ['#D0E8F2', '#FADADD', '#C1F0DC', '#FFFACD', '#EADCF2', '#FFEDCC'];
 
   return (
-    <ScrollView contentContainerStyle={[GS.card, { paddingTop: 40, backgroundColor: '#fff' }]}>
+    <ScrollView contentContainerStyle={[GS.card, { paddingTop: 70, backgroundColor: '#fff' }]}>
       <Text style={GS.title}>Update Expense</Text>
 
       {/* ─── “Description”  ─────────────────────────────── */}
-      <Text style={GS.footerText}>Description</Text>
+      <Text style={[GS.footerText, styles.label]}>Description</Text>
       <TextInput
         style={GS.input}
         placeholder="e.g. Gym Membership"
+        placeholderTextColor={GS.placeholder}
         value={description}
         onChangeText={setDescription}
       />
 
       {/* ─── Currency (moved above Amount, with unified styling) ───────────────────── */}
-      <Text style={GS.footerText}>Currency</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={currency}
-          onValueChange={setCurrency}
-          mode="dropdown"
-          style={styles.picker}
-          dropdownIconColor="#666"
-        >
-          {currency_types.map((c) => (
-            <Picker.Item key={c} label={c} value={c} />
-          ))}
-        </Picker>
-        {Platform.OS === 'web' && (
-          <View style={styles.webArrow}>
-            <Text style={{ color: '#666', fontSize: 12 }}>▼</Text>
-          </View>
-        )}
-      </View>
+      <Text style={[GS.footerText, styles.label]}>Currency</Text>
+        <DropDownPicker
+                open={openCurrency}
+                value={currency}
+
+                items={currency_types.map((c) => ({ label: c, value: c }))}
+                setOpen={setOpenCurrency}
+                setValue={setCurrency}    
+
+                /* ---- fixed light palette ---- */
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropdownContainer}
+                textStyle={styles.dropdownText}
+                listItemLabelStyle={styles.dropdownText}
+
+                placeholder="Select"
+                searchable
+                zIndex={10}        /* avoids overlap inside ScrollViews / modals */
+        />
 
       {/* ─── Amount ─────────────────────────────────────────────────────────────── */}
-      <Text style={GS.footerText}>Amount</Text>
+      <Text style={[GS.footerText, styles.label]}>Amount</Text>
       <TextInput
         style={GS.input}
         placeholder="0.00"
@@ -161,8 +165,8 @@ export default function UpdateExpense() {
       />
 
       {/* ─── Select a Category (now between Amount and Date) ───────────────────────── */}
-      <Text style={GS.footerText}>Select a Category</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginVertical: 10 }}>
+      <Text style={[GS.footerText, styles.label]}>Select a Category</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginVertical: 5 }}>
         {expense_types.map((type, i) => {
           const bgColor = category === type ? pastelColors[i % pastelColors.length] : '#eee';
           return (
@@ -184,7 +188,7 @@ export default function UpdateExpense() {
       </ScrollView>
 
       {/* ─── Date (single field, same style as Add modal) ───────────────────────────── */}
-      <Text style={GS.footerText}>Date</Text>
+      <Text style={[GS.footerText, styles.label]}>Date</Text>
       {Platform.OS === 'web' ? (
         <TextInput
           style={GS.input}
@@ -237,40 +241,22 @@ export default function UpdateExpense() {
 }
 
 const styles = StyleSheet.create({
-  // “Currency” wrapper: light-gray rounded box + single border
-  pickerWrapper: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    borderWidth: 1,
+  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  dropdown: {
+    backgroundColor: '#fff',
     borderColor: '#ccc',
-    marginBottom: 15,
-    overflow: 'hidden',
-    position: 'relative', // needed to position the arrow icon on web
+    marginBottom: 14,
   },
-  // The actual <Picker> styling
-  picker: {
-    height: 50,
-    width: '100%',
+  dropdownContainer: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+  },
+  dropdownText: {
     color: '#000',
-    backgroundColor: '#f5f5f5',
-    ...Platform.select({
-      web: {
-        borderWidth: 0,
-        appearance: 'none',
-        WebkitAppearance: 'none',
-        paddingHorizontal: 12,
-      },
-      ios: {},
-      android: {},
-    }),
   },
-  // Small ▼ icon overlay (web only)
-  webArrow: {
-    position: 'absolute',
-    right: 12,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    pointerEvents: 'none',
+  label: {
+    alignSelf: 'flex-start',
+    marginBottom: 6,
+    marginTop: 6,
   },
 });

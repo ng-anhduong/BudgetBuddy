@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
-import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker";
 import { useUsername, useCurrencyTypes, useCurrencyPreference } from '@/hooks/data';
 import { useUpdateProfileCurrency } from '@/hooks/crud';
 import * as Notifications from 'expo-notifications';
@@ -37,6 +37,9 @@ export default function ProfileScreen() {
 
   // load user's preference 
   const { data: preferenceCurrency, loading: preferenceCurrencyLoading } = useCurrencyPreference();
+
+  /* ────────── local state for the field ────────── */
+  const [openCurrency, setOpenCurrency] = useState(false);
 
   // hook
   const update = useUpdateProfileCurrency();
@@ -99,27 +102,25 @@ export default function ProfileScreen() {
         />
         </View>
             <Text style={GS.footerText}>Currency</Text>
-            <View style={styles.pickerWrapper}>
-              <Picker
-                enabled={!currencyLoading}
-                selectedValue={currency}
-                onValueChange={setCurrency}
-                mode="dropdown"
-                style={styles.picker}
-                dropdownIconColor="#666"
-              >
-                {currencyLoading
-                    ? <Picker.Item label="Loading…" value="" />
-                    : currencyTypes.map(t => <Picker.Item key={t} label={t} value={t} />)
-                }
-              </Picker>
-              {Platform.OS === 'web' && (
-                <View style={styles.webArrow}>
-                  <Text style={{ color: '#666', fontSize: 12 }}>▼</Text>
-                </View>
-              )}
-            </View>
-            <TouchableOpacity onPress={onSave} style={[GS.button, { backgroundColor: '#ddd' }]}>
+            <DropDownPicker
+                open={openCurrency}
+                value={currency}
+
+                items={currencyTypes.map((c) => ({ label: c, value: c }))}
+                setOpen={setOpenCurrency}
+                setValue={setCurrency}    
+
+                /* ---- fixed light palette ---- */
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropdownContainer}
+                textStyle={styles.dropdownText}
+                listItemLabelStyle={styles.dropdownText}
+
+                placeholder="Select"
+                searchable
+                zIndex={10}        /* avoids overlap inside ScrollViews / modals */
+            />
+            <TouchableOpacity onPress={onSave} style={[styles.button, { backgroundColor: '#ddd' }]}>
               <Text style={GS.buttonText}>Save</Text>
             </TouchableOpacity>
       </View>
@@ -196,31 +197,25 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '500',
   },
-  // ── Picker Wrapper ───────────────────────────────────────────────────────────
-  pickerWrapper: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 15,
-    overflow: 'hidden',
-    position: 'relative',
+  button :{
+    marginTop: 16,
+    marginBottom: 12,
+    paddingVertical: 12,
+    borderRadius: 10,
+    backgroundColor: '#4CAF50',
+    alignItems: 'center',
   },
-  picker: {
-    height: 50,
-    width: '100%',
+  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  dropdown: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+  },
+  dropdownContainer: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+  },
+  dropdownText: {
     color: '#000',
-    backgroundColor: '#f5f5f5',
-    ...Platform.select({
-      web: {
-        borderWidth: 0,
-        appearance: 'none',
-        WebkitAppearance: 'none',
-        paddingHorizontal: 12,
-      },
-      ios: {},
-      android: {},
-    }),
   },
 });
 

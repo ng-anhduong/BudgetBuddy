@@ -49,6 +49,7 @@ export default function AddGroup({ visible, onClose }) {
             <TextInput
               style={GS.input}
               placeholder="e.g. JB trip"
+              placeholderTextColor={GS.placeholder}
               value={name}
               onChangeText={setName}
             />
@@ -63,6 +64,7 @@ export default function AddGroup({ visible, onClose }) {
             <TextInput
               style={GS.input}
               placeholder="e.g. 123456"
+              placeholderTextColor={GS.placeholder}
               value={code}
               onChangeText={setCode}
             />

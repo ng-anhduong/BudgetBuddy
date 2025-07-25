@@ -1,7 +1,7 @@
-import React, { useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Keyboard, TouchableWithoutFeedback, Platform, Modal, ActivityIndicator, TextInput, View, Text, Alert, TouchableOpacity, ScrollView, StyleSheet, } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { useAddLimit } from "@/hooks/crud";
 import { useMonthlyLimitForm } from "@/hooks/monthlyLimitForm";
@@ -33,18 +33,22 @@ export default function AddLimit({ visible, onClose }) {
 
     // Reload whenever access this screen
     const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
-      useFocusEffect(
-          React.useCallback(() => {
-            refetchCurrency();
-        }, [refetchCurrency])
-    );
     
+      /* ────────── local state for the field ────────── */
+    const [openCurrency, setOpenCurrency] = useState(false);
+  
     useEffect(()=>{
         if(!preferenceCurrencyLoading) {
           setCurrency(preferenceCurrency)
         }
     },[preferenceCurrencyLoading, preferenceCurrency])
     
+    useFocusEffect(
+      React.useCallback(() => {
+        refetchCurrency();
+      }, [refetchCurrency])
+    );
+  
     // Reload whenever access this screen
     if (!loaded && !error) {
         return null
@@ -83,6 +87,7 @@ export default function AddLimit({ visible, onClose }) {
                 <TextInput
                   style={[GS.input, { flex: 1 }]}
                   placeholder="0.00"
+                  placeholderTextColor={GS.placeholder}
                   value={amount}
                   keyboardType="decimal-pad"
                   onChangeText={setAmount}
@@ -90,26 +95,25 @@ export default function AddLimit({ visible, onClose }) {
             </View>
 
             {/* Currency */}
-            <Text style={[GS.footerText, styles.label]}>Currency</Text>
-            <View style={styles.pickerWrapper}>
-              <Picker
-                selectedValue={currency}
-                onValueChange={setCurrency}
-                mode="dropdown"
-                style={styles.picker}
-                dropdownIconColor="#666"
-              >
-                {currency_types.map((c) => (
-                  <Picker.Item key={c} label={c} value={c} />
-                ))}
-              </Picker>
-              {Platform.OS === 'web' && (
-                <View style={styles.webArrow}>
-                  <Text style={{ color: '#666', fontSize: 12 }}>▼</Text>
-                </View>
-              )}
-            </View>
-            
+            <Text style={[GS.footerText, styles.label]}>Currency</Text>            
+            <DropDownPicker
+              open={openCurrency}
+              value={currency}
+
+              items={currency_types.map((c) => ({ label: c, value: c }))}
+              setOpen={setOpenCurrency}
+              setValue={setCurrency}    
+
+              /* ---- fixed light palette ---- */
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+              textStyle={styles.dropdownText}
+              listItemLabelStyle={styles.dropdownText}
+
+              placeholder="Select"
+              searchable
+              zIndex={10}        /* avoids overlap inside ScrollViews / modals */
+            />
 
             {/* Select a Category */}
             <Text style={[GS.footerText, styles.label]}>Select a Category</Text>
@@ -196,39 +200,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 8,
   },
-  // ── Picker Wrapper ───────────────────────────────────────────────────────────
-  pickerWrapper: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 15,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    color: '#000',
-    backgroundColor: '#f5f5f5',
-    ...Platform.select({
-      web: {
-        borderWidth: 0,
-        appearance: 'none',
-        WebkitAppearance: 'none',
-        paddingHorizontal: 12,
-      },
-      ios: {},
-      android: {},
-    }),
-  },
-  webArrow: {
-    position: 'absolute',
-    right: 12,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    pointerEvents: 'none',
-  },
 
+  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  dropdown: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+  },
+  dropdownContainer: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+  },
+  dropdownText: {
+    color: '#000',
+  },
 });

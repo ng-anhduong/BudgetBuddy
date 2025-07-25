@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -41,9 +41,9 @@ export default function AnalyticsScreen() {
     }, [refetchCurrency])
   );
 
-  if ( loading || preferenceCurrencyLoading ) {
-    return <ActivityIndicator style={{ flex: 1 }} />;
-  }
+  // if ( loading || preferenceCurrencyLoading ) {
+  //   return <ActivityIndicator style={{ flex: 1 }} />;
+  // }
 
   /* ---------- BarChart data ---------- */
   const labels = expenses.map((e) =>
@@ -62,6 +62,54 @@ export default function AnalyticsScreen() {
     const last  = format(new Date(expenses[expenses.length - 1].date), "dd MMM");
     return `${first} – ${last}`;
   })();
+
+  /* ---------- PieChart data (max 5 slices) ---------- */
+  const pieData = useMemo(() => {
+    if (!categories.length) return [];
+
+    // 1. Sort categories by descending amount so the biggest spenders are first
+    const sorted = [...categories].sort((a, b) => b.amount - a.amount);
+    const MAX_SLICES = 5;
+
+    // 2. If we already have 5 or fewer categories, show them all
+    if (sorted.length <= MAX_SLICES) {
+      return sorted.map((c, idx) => ({
+        name: c.category,
+        population: c.amount,
+        color: palette[idx % palette.length],
+        legendFontColor: "#333",
+        legendFontSize: 12,
+      }));
+    }
+
+    // 3. Otherwise, keep the top 4 and aggregate the rest into "Others"
+    const major = sorted.slice(0, MAX_SLICES - 1);
+    const othersAmount = sorted
+      .slice(MAX_SLICES - 1)
+      .reduce((sum, c) => sum + c.amount, 0);
+
+    const chartReady = major.map((c, idx) => ({
+      name: c.category,
+      population: c.amount,
+      color: palette[idx % palette.length],
+      legendFontColor: "#333",
+      legendFontSize: 12,
+    }));
+
+    chartReady.push({
+      name: "Others",
+      population: othersAmount,
+      color: "#a0a0a0", // neutral grey for aggregated slice
+      legendFontColor: "#333",
+      legendFontSize: 12,
+    });
+
+    return chartReady;
+  }, [categories]);
+
+  if ( loading || preferenceCurrencyLoading ) {
+    return <ActivityIndicator style={{ flex: 1 }} />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff'}}>
@@ -109,16 +157,9 @@ export default function AnalyticsScreen() {
 
         <Text style={styles.chartTitle}>Spending categories</Text>
         {/* ===== PieChart ===== */}
-        {!loading && !error && !!categories.length && (
-          <>
+        {!loading && !error && !!pieData.length && (
             <PieChart
-              data={categories.map((c, idx) => ({
-                name: c.category,
-                population: c.amount,
-                color: palette[idx % palette.length],
-                legendFontColor: "#333",
-                legendFontSize: 12,
-              }))}
+              data={pieData}
               width={screenW}
               height={220}
               hasLegend={true}
@@ -127,7 +168,6 @@ export default function AnalyticsScreen() {
               paddingLeft="16"
               chartConfig={{ color: () => "#000", decimalPlaces: 0 }}
             />
-          </>
         )}
       </ScrollView>
     </SafeAreaView>

@@ -3,11 +3,13 @@ import {
   Platform, Text, View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, TextInput, Button
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker";
 import { useExpenses, useCurrencyTypes, useCurrencyPreference } from '@/hooks/data';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFocusEffect } from "@react-navigation/native";
 import numeral from 'numeral'; 
+import { GlobalStyles as GS } from '@/constants/GlobalStyles';
+
 
 export default function AllExpenses() {
   // search for params: currency when navigate to this screen
@@ -22,6 +24,9 @@ export default function AllExpenses() {
   // load user's preference 
   const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
 
+      /* ────────── local state for the field ────────── */
+  const [openCurrency, setOpenCurrency] = useState(false);
+  
   // set visible currency variable
   const [currency, setCurrency] = useState("");
 
@@ -97,30 +102,37 @@ export default function AllExpenses() {
         <TextInput
           style={styles.searchInput}
           placeholder="Search category or description"
+          placeholderTextColor={GS.placeholder}
           value={query}
           onChangeText={setQuery}
         />
       </View>
       {/* Currency setting box */}
       <View style={styles.currencyRow}>
+        <View style={{ flex: 0.75, marginRight: 8 }}>
         {/* dropdown  */}
-        <Picker
-          selectedValue={currency}
-          onValueChange={setCurrency}
-          style={styles.currencyPicker}
-          mode="dropdown"           // iOS shows a sheet; Android a dropdown.
-          dropdownIconColor="#666"
-          
-        >
-          <Picker.Item label="Select currency…" value="" color="#888" />
-          {currencyTypes.map(c => (
-            <Picker.Item key={c} label={c} value={c} />
-          ))}
-        </Picker>
+          <DropDownPicker
+                  open={openCurrency}
+                  value={currency}
 
+                  items={currencyTypes.map((c) => ({ label: c, value: c }))}
+                  setOpen={setOpenCurrency}
+                  setValue={setCurrency}    
+
+                  /* ---- fixed light palette ---- */
+                  style={styles.dropdown}
+                  dropDownContainerStyle={styles.dropdownContainer}
+                  textStyle={styles.dropdownText}
+                  listItemLabelStyle={styles.dropdownText}
+
+                  placeholder="Select"
+                  searchable
+                  zIndex={10}        
+          />
+        </View>
         {/* action button */}
         <TouchableOpacity
-          style={styles.changeBtn}
+          style={[styles.changeBtn, { flex: 0.25 }]} 
           onPress={() =>
             currency === ''
               ? router.replace('/(tabs)/personal_expenses/history')
@@ -230,12 +242,13 @@ const styles = StyleSheet.create({
   },
   changeBtn: {
     backgroundColor: '#4CAF50',
-    paddingHorizontal: 14,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 17,
     borderRadius: 10,
   },
   changeTxt: {
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
   },
 });
