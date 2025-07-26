@@ -14,6 +14,7 @@ import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
 import { useFocusEffect } from "@react-navigation/native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AddGroupExpense from './addExpense';
+import socket from '@/constants/socket';
 
 export default function GroupDetails() {
   // ─── Hooks & State (always at top) ───────────────────────────────────────────
@@ -29,6 +30,24 @@ export default function GroupDetails() {
         refetchDetails({group_id: id});
       }, [refetchDetails])
     );
+
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+    // console.log(id)
+    socket.emit('join_group', { group_id: id })
+
+    socket.on('table_update', () => {
+      refetchDetails({group_id: id});
+    });
+    
+    // cleanup on unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, [id, refetchDetails]);
+
   // ─── Early returns (now safe, because hooks are already called) ───────────────
   if (!loaded && !error) {
     return null; // font not ready
