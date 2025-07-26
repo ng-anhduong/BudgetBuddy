@@ -70,63 +70,65 @@ export default function AllLimits() {
         return <ActivityIndicator style={{ flex: 1 }} />;
     }
     
+    const month = new Date().toLocaleString('en-US', { month: 'long' });
+
     const renderItem = ({ item, index }) => {
-    const spent      = parseFloat(item.total);      // already rounded on the API
-    const cap        = parseFloat(item.amount);
-    const remaining  = cap - spent;  
-    const progress   = Math.min(spent / cap, 1);    // 0 → 1
-    const bg         = PASTELS[index % PASTELS.length];
-    const title      = item.types.join(", ");       // “Food, Transport” …
+      const spent      = parseFloat(item.total);      // already rounded on the API
+      const cap        = parseFloat(item.amount);
+      const remaining  = cap - spent;  
+      const progress   = Math.min(spent / cap, 1);    // 0 → 1
+      const bg         = PASTELS[index % PASTELS.length];
+      const title      = item.types.length === 12 ? "Everything" : item.types.join(", ");       // “Food, Transport” …
 
-    return (
-        <TouchableOpacity
-          style={[styles.card, { backgroundColor: bg }]}
-          onPress={() => router.push({ pathname: "/monthly_limit/update", params: { id: item.id } })}
-        >
-          {/* Title */}
-          <Text style={styles.cardTitle}>{title}</Text>
+      return (
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: bg }]}
+            onPress={() => router.push({ pathname: "/monthly_limit/update", params: { id: item.id } })}
+          >
+            {/* Title */}
+            <Text style={styles.cardTitle}>{title}</Text>
 
-          {/* Figures */}
-          <View style={styles.row}>
-            <View>
-              <Text style={styles.label}>Total Paid</Text>
-              <Text style={styles.value}>
-                {currency} {numeral(spent).format('0.0 a')}
-              </Text>
+            {/* Figures */}
+            <View style={styles.row}>
+              <View>
+                <Text style={styles.label}>Total Paid</Text>
+                <Text style={styles.value}>
+                  {currency} {numeral(spent).format('0.0 a')}
+                </Text>
+              </View>
+              <View>
+                {remaining > 0
+                ? (<><Text style={styles.label}>Total Remaining</Text><Text style={styles.value}>
+                  {currency} {numeral(remaining).format('0.0 a')}
+                </Text></>)
+                : (<><Text style={styles.label}>Overshooting</Text>
+                <Text style={styles.value}>
+                  {currency} {numeral(-remaining).format('0.0 a')}
+                </Text></>)
+                }
+                
+              </View>
             </View>
-            <View>
-              {remaining > 0
-              ? (<><Text style={styles.label}>Total Remaining</Text><Text style={styles.value}>
-                {currency} {numeral(remaining).format('0.0 a')}
-              </Text></>)
-              : (<><Text style={styles.label}>Overshooting</Text>
-              <Text style={styles.value}>
-                {currency} {numeral(-remaining).format('0.0 a')}
-              </Text></>)
-              }
-              
-            </View>
-          </View>
 
-          {/* Progress bar */}
-          <View style={styles.progressBar}>
-            <View style={{ 
-              height:'100%', 
-              width: `${progress * 100}%`, 
-              backgroundColor:remaining > 0 ? 'green' : 'red'
-              }} />
-          </View>
-        </TouchableOpacity>
+            {/* Progress bar */}
+            <View style={styles.progressBar}>
+              <View style={{ 
+                height:'100%', 
+                width: `${progress * 100}%`, 
+                backgroundColor:remaining > 0 ? 'green' : 'red'
+                }} />
+            </View>
+          </TouchableOpacity>
       );
     };
     // Screen
     return (
     <View style={styles.container}>
         
-        <Text style={styles.title}>All Monthly limits</Text>
+        <Text style={styles.title}>{month} spending</Text>
   
         <FlatList
-          data={Limits}
+          data={Limits} 
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}

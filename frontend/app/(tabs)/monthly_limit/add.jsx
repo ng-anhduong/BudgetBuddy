@@ -67,6 +67,31 @@ export default function AddLimit({ visible, onClose }) {
         router.replace('/(tabs)/monthly_limit/allLimits')
     };
 
+    const toggleItem = (item) => {
+      setTypes((prev) =>
+        prev.includes(item)
+          ? prev.filter((i) => i !== item)
+          : [...prev, item]
+      );
+    };
+
+    const itemsPerRow = 2;
+    const rows = [];
+
+    for (let i = 0; i < expense_types.length; i += itemsPerRow) {
+      rows.push(expense_types.slice(i, i + itemsPerRow));
+    }
+    
+    const allSelected = types.length === expense_types.length;
+
+    const toggleSelectAll = () => {
+      if (allSelected) {
+        setTypes([]); // unselect all
+      } else {
+        setTypes([...expense_types]); // select all
+      }
+    };
+
   return (
     <Modal
       animationType="slide"
@@ -116,28 +141,59 @@ export default function AddLimit({ visible, onClose }) {
             />
 
             {/* Select a Category */}
-            <Text style={[GS.footerText, styles.label]}>Select a Category</Text>
-            <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={{ marginVertical: 10 }}
+            <View
+              style= {{flexDirection: 'row', marginTop: 5,}}
             >
-                {expense_types.map((type, i) => {
-                    const active   = types[0] === type;
+              <Text style={styles.label}>Select a Category</Text>
+              <TouchableOpacity
+                onPress={toggleSelectAll}
+                style={{
+                  padding: 10,
+                  backgroundColor: '#ccc',
+                  borderRadius: 10,
+                  alignSelf: 'flex-start',
+                  marginBottom: 10,
+                  marginLeft: 10,
+                }}
+              >
+                <Text>{allSelected ? 'Unselect All' : 'Select All'}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ marginVertical: 10 }}>
+              {rows.map((row, rowIndex) => (
+                <View
+                  key={rowIndex}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginBottom: 10,
+                  }}
+                >
+                  {row.map((type, i) => {
+                    const active = types.includes(type);
                     const bgColour = active
-                        ? pastelColors[i % pastelColors.length]
-                        : '#eee';
+                      ? pastelColors[(rowIndex * itemsPerRow + i) % pastelColors.length]
+                      : '#eee';
                     return (
-                        <TouchableOpacity
-                            key={type}
-                            onPress={() => setTypes([type])}
-                            style={[styles.pill, { backgroundColor: bgColour }]}
-                        >
-                            <Text>{type}</Text>
-                        </TouchableOpacity>
+                      <TouchableOpacity
+                        key={type}
+                        onPress={() => toggleItem(type)}
+                        style={[
+                          styles.pill,
+                          {
+                            backgroundColor: bgColour,
+                            flex: 1,
+                            marginHorizontal: 2,
+                          },
+                        ]}
+                      >
+                        <Text>{type}</Text>
+                      </TouchableOpacity>
                     );
-                })}
-            </ScrollView>
+                  })}
+                </View>
+              ))}
+            </View>
 
             {/* Add Button */}
             <TouchableOpacity onPress={onAddPress} style={styles.addButton}>
@@ -199,6 +255,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 20,
     marginRight: 8,
+    alignItems: 'center',
+  justifyContent: 'center',
   },
 
   // ── Dropdown Styles ───────────────────────────────────────────────────────────

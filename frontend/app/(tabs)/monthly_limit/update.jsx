@@ -57,33 +57,91 @@ export default function AddLimit() {
         );
     }
 
-    const pastel = ['#D0E8F2','#FADADD','#C1F0DC','#FFFACD','#EADCF2','#FFEDCC'];
+    const toggleItem = (item) => {
+      setTypes((prev) =>
+        prev.includes(item)
+          ? prev.filter((i) => i !== item)
+          : [...prev, item]
+      );
+    };
+
+    const itemsPerRow = 2;
+    const rows = [];
+
+    for (let i = 0; i < expense_types.length; i += itemsPerRow) {
+      rows.push(expense_types.slice(i, i + itemsPerRow));
+    }
+
+    const pastelColors = ['#FFE5EC','#E5F9E0','#E4ECFF','#FFF4D6','#F1E4FF'];
+
+    const allSelected = types.length === expense_types.length;
+
+    const toggleSelectAll = () => {
+      if (allSelected) {
+        setTypes([]); // unselect all
+      } else {
+        setTypes([...expense_types]); // select all
+      }
+    };
 
     return (
     <ScrollView contentContainerStyle={[styles.card, { paddingTop: 70 }]}>
         <Text style={styles.heading}>Update Budget Limit</Text>
 
         {/* ── Category chips  (single-select) ───────────────────── */}
-        <Text style={styles.label}>Select a Category</Text>
-        <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginVertical: 10 }}
+        <View
+          style= {{flexDirection: 'row', }}
         >
-        {expense_types.map((type, i) => {
-            const active = types[0] === type;               // single choice
-            const bg     = active ? pastel[i % pastel.length] : '#eee';
-            return (
-            <TouchableOpacity
-                key={type}
-                onPress={() => setTypes([type])}            // single choice setter
-                style={[styles.pill, { backgroundColor: bg }]}
+          <Text style={styles.label}>Select a Category</Text>
+          <TouchableOpacity
+            onPress={toggleSelectAll}
+            style={{
+              padding: 10,
+              backgroundColor: '#ccc',
+              borderRadius: 10,
+              alignSelf: 'flex-start',
+              marginBottom: 10,
+              marginLeft: 10,
+            }}
+          >
+            <Text>{allSelected ? 'Unselect All' : 'Select All'}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ marginVertical: 10 }}>
+          {rows.map((row, rowIndex) => (
+            <View
+              key={rowIndex}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 10,
+              }}
             >
-                <Text>{type}</Text>
-            </TouchableOpacity>
-            );
-        })}
-        </ScrollView>
+              {row.map((type, i) => {
+                const active = types.includes(type);
+                const bgColour = active
+                  ? pastelColors[(rowIndex * itemsPerRow + i) % pastelColors.length]
+                  : '#eee';
+                return (
+                  <TouchableOpacity
+                    key={type}
+                    onPress={() => toggleItem(type)}
+                    style={[
+                      styles.pill,
+                      {
+                        backgroundColor: bgColour,
+                        flex: 1,
+                        marginHorizontal: 2,
+                      },
+                    ]}
+                  >
+                    <Text>{type}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          ))}
+        </View>
 
         {/* ── Amount ─────────────────────────────────────────── */}
         <Text style={styles.label}>Amount</Text>
