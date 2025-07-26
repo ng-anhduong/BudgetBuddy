@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   FlatList,
+  Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useGroupDetails } from '@/hooks/data';
@@ -17,6 +18,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import AddGroupExpense from './addExpense';
 import numeral from 'numeral';
 import socket from '@/constants/socket';
+import * as Clipboard from 'expo-clipboard';
 
 export default function GroupDetails() {
   // ─── Hooks & State (always at top) ───────────────────────────────────────────
@@ -57,12 +59,19 @@ export default function GroupDetails() {
     return null; // font not ready
   }
   if (loading) {
-          return (
-            <View style={styles.centered}>
-              <ActivityIndicator size="large" />
-            </View>
-          );
-        }
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(details.group_id);
+    Alert.alert("Copied to clipboard");
+  };
+
+
   //@params
   //  type: "settlement" or "expense"
   const renderHistory = ({item, index}) => {
@@ -163,8 +172,12 @@ export default function GroupDetails() {
               onPress= {()=> router.replace({ pathname: '/(tabs)/split/members', params: { id: id } })}
             />
             <Text style={[styles.title, {paddingTop: -20}]}>{details.name} </Text>
-            <Text style={styles.grpID}>Group code: #{details.group_id}</Text>
-            
+            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={styles.grpID}>Group code: #{details.group_id}</Text>
+              <TouchableOpacity onPress={copyToClipboard} style = {{paddingBottom: 5,}}>
+                <Ionicons name="copy-outline" size={24} color="black" style = {{paddingBottom: 20, paddingLeft: 10,}}/>
+              </TouchableOpacity>
+            </View>
             <FlatList
                 data={details.settlements.concat(details.history)}
                 renderItem={renderHistory}
