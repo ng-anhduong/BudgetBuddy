@@ -9,7 +9,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFocusEffect } from "@react-navigation/native";
 import numeral from 'numeral'; 
 import { GlobalStyles as GS } from '@/constants/GlobalStyles';
-
+import { useDownload }from '@/hooks/exportFile';
 
 export default function AllExpenses() {
   // search for params: currency when navigate to this screen
@@ -29,6 +29,8 @@ export default function AllExpenses() {
   
   // set visible currency variable
   const [currency, setCurrency] = useState("");
+
+  const dw = useDownload();
 
   // Reload whenever access this screen
     useFocusEffect(
@@ -96,6 +98,11 @@ export default function AllExpenses() {
           onPress = {() => router.replace('/(tabs)/personal_expenses/expenses')}
         />
         <Text style={styles.title}>All Expenses</Text>
+        
+      </View>
+      <View>
+        <Ionicons name="cloud-download-outline" size={30} color="black" style ={{position: 'absolute', top: -50, right: 20, zIndex:10}}
+          onPress={dw}/>
       </View>
       <View style={styles.searchBox}>
         <Ionicons name="search" size={20} color="#888" style={styles.icon} />
