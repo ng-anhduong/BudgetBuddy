@@ -57,6 +57,14 @@ export default function AddExpense() {
       router.replace('/(tabs)/reminders/allReminders');
     };
 
+    const autoRenew = () => {
+      const e = new Date(end_time);
+      const s = new Date(start_time); 
+      const gap = e.getTime() - s.getTime();
+      setStartTime(new Date(e));
+      setEndTime(new Date(e.getTime() + gap));
+    }
+
     // Screen
     return (
       <ScrollView contentContainerStyle={[GS.card, { padding: 24, backgroundColor: '#fff' }]}>
@@ -104,6 +112,10 @@ export default function AddExpense() {
             onChange={setEndTime}
           />
         )}
+
+      <TouchableOpacity onPress={autoRenew} style={GS.button}>
+        <Text style={GS.buttonText}>Renew</Text>
+      </TouchableOpacity>
 
       {/* ─── Save Button (navigates back after saving) ──────────────────────────────── */}
       <TouchableOpacity onPress={onSave} style={GS.button}>

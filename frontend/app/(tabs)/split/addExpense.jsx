@@ -180,8 +180,8 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
               </TouchableOpacity>
             </View>
 
-            <ScrollView
-              style={{ maxHeight: 120 }}
+            <View
+              
               contentContainerStyle={{ paddingVertical: 0 }}
               keyboardShouldPersistTaps="always"
               showsVerticalScrollIndicator={true}
@@ -249,7 +249,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
               ))}
 
               
-            </ScrollView>
+            </View>
             
 
               <Text style={{color: total == amount ? 'green': 'red', paddingVertical:5}}>Total: {total} / {amount} {currency}</Text>
