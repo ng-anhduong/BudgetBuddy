@@ -48,6 +48,20 @@ export default function AddExpense() {
     };
   
   
+    const onEDateChange = (event, selectedDate) => {
+      setShoweDatePicker(false);
+      if (selectedDate) {
+        setEndTime(selectedDate);
+      }
+    };
+
+    const onSDateChange = (event, selectedDate) => {
+      setShowsDatePicker(false);
+      if (selectedDate) {
+        setStartTime(selectedDate);
+      }
+    };
+
     const onSave = async () => {
       await updateSub();
       router.replace('/(tabs)/reminders/allReminders');
@@ -67,7 +81,7 @@ export default function AddExpense() {
 
     // Screen
     return (
-      <ScrollView contentContainerStyle={[GS.card, { padding: 24, backgroundColor: '#fff' }]}>
+      <ScrollView contentContainerStyle={[GS.card, { padding: 24, paddingTop: 50, backgroundColor: '#fff' }]}>
       <Text style={GS.title}>Update Subscription & Reminder</Text>
 
       {/* ─── “Description”  ─────────────────────────────── */}
@@ -92,7 +106,7 @@ export default function AddExpense() {
             value={start_time}
             mode="date"
             display="default"
-            onChange={setStartTime}
+            onChange={onSDateChange}
           />
         )}
 
@@ -109,7 +123,7 @@ export default function AddExpense() {
             value={end_time}
             mode="date"
             display="default"
-            onChange={setEndTime}
+            onChange={onEDateChange}
           />
         )}
 
