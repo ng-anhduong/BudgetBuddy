@@ -9,8 +9,6 @@ import { useCurrencyPreference } from '@/hooks/data';
 import { useFocusEffect } from "@react-navigation/native";
 import { GlobalStyles as GS } from '@/constants/GlobalStyles';
 
-
-
 export default function AddLimit({ visible, onClose }) {  
     const router = useRouter();
 

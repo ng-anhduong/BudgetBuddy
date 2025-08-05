@@ -108,8 +108,8 @@ function useAction(api, message) {
             if (res.ok) {
                 Alert.alert(message);
             } else {
-                console.log(data.message)
-                Alert.alert("Failed:", data.message || "");
+                console.log(data.error)
+                Alert.alert("Failed:", data.error || "");
             }
             return res.ok;
             

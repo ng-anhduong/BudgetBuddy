@@ -79,10 +79,10 @@ export default function ExpensesScreen() {
           <Text
             style={[
               styles.txnAmount,
-              { color: Number(item.amount) < 0 ? 'green' : 'red' },
+              { color: 'green' },
             ]}
           >
-            {Number(item.amount) < 0 ? '+' : '-'} {numeral(Math.abs(item.amount)).format('0.0 a')} {item.currency}
+            {numeral(item.amount).format('0.0 a')} {item.currency}
           </Text>
           <Text style={styles.txnDate}>{`${day}/${month}/${year}`}</Text>
         </View>
@@ -105,14 +105,6 @@ export default function ExpensesScreen() {
           />
         </TouchableOpacity>
       </View>
-
-      {/* Alerts Block
-      <View style={styles.alertBlock}>
-        <Text style={styles.alertText}>🔔 Alerts</Text>
-        <Text style={styles.alertContent}>
-          Spotify May subscription ends tomorrow!
-        </Text>
-      </View> */}
 
       {/* ── 1) Summary Card ───────────────────────────────────────────────────────── */}
       <View style={styles.summaryCard}>

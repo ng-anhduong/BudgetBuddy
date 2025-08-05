@@ -86,6 +86,7 @@ export default function AddGroup({ visible, onClose }) {
 }
 
 const styles = StyleSheet.create({
+  // General
   backdrop: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
-  // ── Picker Wrapper ───────────────────────────────────────────────────────────
+  // Picker Wrapper
   pickerWrapper: {
     backgroundColor: '#f5f5f5',
     borderRadius: 20,
@@ -117,16 +118,6 @@ const styles = StyleSheet.create({
     width: '100%',
     color: '#000',
     backgroundColor: '#f5f5f5',
-    ...Platform.select({
-      web: {
-        borderWidth: 0,
-        appearance: 'none',
-        WebkitAppearance: 'none',
-        paddingHorizontal: 12,
-      },
-      ios: {},
-      android: {},
-    }),
   },
   webArrow: {
     position: 'absolute',
@@ -137,7 +128,7 @@ const styles = StyleSheet.create({
     pointerEvents: 'none',
   },
 
-  // ── Buttons ─────────────────────────────────────────────────────────────────────
+  // Buttons 
   addButton: {
     marginTop: 16,
     marginBottom: 12,

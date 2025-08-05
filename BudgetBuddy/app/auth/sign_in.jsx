@@ -24,7 +24,7 @@ export default function SignInScreen() {
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
-        style={GS.input}
+        style={[GS.input, {width:'80%'}]}
         placeholderTextColor="#888"
         autoCapitalize="none"
       />
@@ -34,7 +34,7 @@ export default function SignInScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={GS.input}
+        style={[GS.input, {width:'80%'}]}
         placeholderTextColor="#888"
       />
 

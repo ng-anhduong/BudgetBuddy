@@ -79,8 +79,8 @@ export default function AllExpenses() {
           <Text style={styles.description}>{item.description}</Text>
         </View>
         <View style={styles.details}>
-          <Text style={[styles.amount, { color: item.amount < 0 ? 'green' : 'red' }]}> 
-            {Number(item.amount) < 0 ? '+' : '-'} {numeral(Math.abs(item.amount)).format('0.0 a')} {item.currency}
+          <Text style={[styles.amount, { color:'green'}]}> 
+            {numeral(item.amount).format('0.0 a')} {item.currency}
           </Text>
           <Text style={styles.date}>{`${day} ${month}, ${year}`}</Text>
         </View>
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 70,
+    paddingTop: 40,
   },
   title: {
     fontSize: 22,

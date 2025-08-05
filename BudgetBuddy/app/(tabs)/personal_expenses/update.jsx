@@ -91,7 +91,7 @@ export default function UpdateExpense() {
   };
 
   const onDelete = () => {
-    Alert.alert('Delete Transaction', 'Are you sure you want to delete this item?', [
+    Alert.alert('Delete Expense', 'Are you sure you want to delete this item?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',

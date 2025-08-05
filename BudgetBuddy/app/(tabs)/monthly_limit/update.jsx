@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, TextInput, View, Text, TouchableOpacity, ScrollView, StyleSheet, } from 'react-native';
+import { ActivityIndicator, TextInput, View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams  } from 'expo-router';
 import DropDownPicker from "react-native-dropdown-picker";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
-import { useUpdateLimit } from "@/hooks/crud";
+import { useUpdateLimit, useDeleteLimit } from "@/hooks/crud";
 import { useMonthlyLimitForm } from "@/hooks/monthlyLimitForm";
-import { MaterialIcons } from '@expo/vector-icons';
 
 export default function AddLimit() {  
     const { id } = useLocalSearchParams(); 
     const update = useUpdateLimit();
+    const deleteLimit = useDeleteLimit();
     const {
         types,      setTypes,
         amount,     setAmount,
@@ -24,7 +24,7 @@ export default function AddLimit() {
         Inter_500Medium,
     })
     
-      /* ────────── local state for the field ────────── */
+    // local state for the field 
     const [openCurrency, setOpenCurrency] = useState(false);
     
     if (!loaded && !error) {
@@ -33,28 +33,6 @@ export default function AddLimit() {
 
     if (load1 || load2) {
         return <ActivityIndicator style={{ flex: 1 }} />;
-    }
-
-    const toggleType = (opt) => {
-        setTypes((prev) =>
-            prev.includes(opt) ? prev.filter((x) => x !== opt) : [...prev, opt]
-        );
-    }
-
-    const toggleAll = () => {
-        const allSelected = types.length === expense_types.length;
-        setTypes(allSelected ? [] : [...expense_types]);
-    };
-
-    function CustomCheckbox({ checked, onChange }) {
-        return (
-            <TouchableOpacity onPress={() => onChange(!checked)} style={{padding: 4,}}>
-            <MaterialIcons
-                name={checked ? 'check-box' : 'check-box-outline-blank'}
-                size={24}
-            />
-            </TouchableOpacity>
-        );
     }
 
     const toggleItem = (item) => {
@@ -89,11 +67,25 @@ export default function AddLimit() {
         router.replace('/(tabs)/monthly_limit/allLimits')
     };
 
+    const onDelete = () => {
+        Alert.alert('Delete Monthly budget limit', 'Are you sure you want to delete this item?', [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: async () => {
+                const ok = await deleteLimit({ id });
+                router.replace('/(tabs)/monthly_limit/allLimits')
+            }
+          }
+        ]);
+      };
+
     return (
     <ScrollView contentContainerStyle={[styles.card, { paddingTop: 70 }]}>
         <Text style={styles.heading}>Update Budget Limit</Text>
 
-        {/* ── Category chips  (single-select) ───────────────────── */}
+        {/* Category chips  (single-select) */}
         <View
           style= {{flexDirection: 'row', }}
         >
@@ -148,7 +140,7 @@ export default function AddLimit() {
           ))}
         </View>
 
-        {/* ── Amount ─────────────────────────────────────────── */}
+        {/* Amount */}
         <Text style={styles.label}>Amount</Text>
         <TextInput
         style={styles.input}
@@ -158,7 +150,7 @@ export default function AddLimit() {
         onChangeText={setAmount}
         />
 
-        {/* ── Currency  ───────────────────────────────────────── */}
+        {/* Currency */}
         <Text style={styles.label}>Currency</Text>
         <DropDownPicker
           open={openCurrency}
@@ -168,7 +160,7 @@ export default function AddLimit() {
           setOpen={setOpenCurrency}
           setValue={setCurrency}    
 
-          /* ---- fixed light palette ---- */
+          /* fixed light palette */
           style={styles.dropdown}
           dropDownContainerStyle={styles.dropdownContainer}
           textStyle={styles.dropdownText}
@@ -180,11 +172,16 @@ export default function AddLimit() {
         />
 
 
-        {/* ── Buttons ────────────────────────────────────────── */}
+        {/* Buttons */}
         <TouchableOpacity onPress={onSave} style={styles.saveBtn}>
         <Text style={styles.btnTxt}>Save</Text>
         </TouchableOpacity>
-
+        
+        {/* Delete Button */}
+        <TouchableOpacity onPress={onDelete} style={[styles.deleteBtn, { backgroundColor: '#f88' }]}>
+          <Text style={[styles.btnTxt, { color: '#fff' }]}>Delete</Text>
+        </TouchableOpacity>
+        
         <TouchableOpacity
         onPress={() => router.replace('/(tabs)/monthly_limit/allLimits')}
         style={styles.cancelBtn}
@@ -196,6 +193,8 @@ export default function AddLimit() {
 }
 
 const styles = StyleSheet.create({
+
+  // General 
   backdrop: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -211,60 +210,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     marginTop: 12,
   },
-
-
-  // ── Buttons ─────────────────────────────────────────────────────────────────────
-  addButton: {
-    marginTop: 16,
-    marginBottom: 12,
-    paddingVertical: 12,
-    borderRadius: 10,
-    backgroundColor: '#4CAF50',
-    alignItems: 'center',
-  },
-  addButtonText: {
-    fontSize: 16,
-    fontFamily: 'Inter_500Medium',
-    color: '#fff',
-  },
-  backButton: {
-    marginBottom: 24,
-    paddingVertical: 12,
-    borderRadius: 10,
-    backgroundColor: '#ccc',
-    alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 16,
-    fontFamily: 'Inter_500Medium',
-    color: '#000',
-  },
-  optionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  label: {
-    marginLeft: 8,
-    fontSize: 16,
-  },
-  wrapContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 8,
-  },
-  typeItem: {
-    width: '50%',          // two per row
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
   card: {
     backgroundColor: '#fff',
     paddingHorizontal: 24,
-    paddingBottom: 40,
+    paddingBottom: 10,
   },
-
   heading: {
     fontSize: 20,
     fontWeight: '700',
@@ -272,20 +222,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     color: '#4CAF50',
   },
-
-  label: {
-    fontSize: 14,
-    marginTop: 12,
-    marginBottom: 4,
-  },
-
   pill: {
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 20,
     marginRight: 8,
   },
-
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -296,7 +238,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  // Dropdown 
   dropdown: {
     backgroundColor: '#fff',
     borderColor: '#ccc',
@@ -309,7 +251,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
 
-  /* buttons */
+  // Buttons
   saveBtn: {
     backgroundColor: '#4CAF50',
     borderRadius: 10,
@@ -323,7 +265,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 0,
+  },
+  deleteBtn: {
+    backgroundColor: '#f88',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginBottom: 12,
   },
   btnTxt: {
     fontSize: 16,
