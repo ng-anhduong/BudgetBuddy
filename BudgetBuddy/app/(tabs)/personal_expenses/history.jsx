@@ -9,7 +9,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFocusEffect } from "@react-navigation/native";
 import numeral from 'numeral'; 
 import { GlobalStyles as GS } from '@/constants/GlobalStyles';
-import { useDownload }from '@/hooks/exportFile';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 export default function AllExpenses() {
   // search for params: currency when navigate to this screen
@@ -30,8 +31,6 @@ export default function AllExpenses() {
   // set visible currency variable
   const [currency, setCurrency] = useState("");
 
-  const dw = useDownload();
-
   // Reload whenever access this screen
     useFocusEffect(
       React.useCallback(() => {
@@ -50,6 +49,37 @@ export default function AllExpenses() {
   const router = useRouter();
   const [query, setQuery] = useState('');
 
+  const exportCSV = async () => {
+    try {
+      // console.log(expenses);
+      // Create CSV string
+      const headerString = 'Category,Amount,Currency,Description,Date\n';
+      const rowString = expenses
+        .map(d => `${d.category},${d.amount},${d.currency},${d.description},${d.time}`)
+        .join('\n');
+      const csvString = `${headerString}${rowString}`;
+
+      // Create a file URI in the cache directory
+      const fileUri = FileSystem.cacheDirectory + 'expenses.csv';
+
+      // Write to file
+      await FileSystem.writeAsStringAsync(fileUri, csvString, {
+        encoding: FileSystem.EncodingType.UTF8
+      });
+
+      // Share the file
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri);
+      } else {
+        alert("Sharing isn't available on this platform");
+      }
+    } catch (err) {
+      console.error('Error exporting CSV:', err);
+    }  finally {
+      setIsSharing(false);
+    }
+  };
+
   if (expenseLoading || currencyLoading) {
     return <ActivityIndicator style={{ flex: 1 }} />;
   }
@@ -59,8 +89,10 @@ export default function AllExpenses() {
     item.description.toLowerCase().includes(query.toLowerCase())
   );
 
+  
+
   const renderItem = ({ item, index }) => {
-    const date = new Date(item.time);
+    const date = new Date(item.time); 
     const day = date.getDate();
     const month = date.toLocaleString('en-US', { month: 'short' });
     const year = date.getFullYear();
@@ -101,8 +133,8 @@ export default function AllExpenses() {
         
       </View>
       <View>
-        <Ionicons name="cloud-download-outline" size={30} color="black" style ={{position: 'absolute', top: -50, right: 20, zIndex:10}}
-          onPress={dw}/>
+        <Ionicons name="share-social-outline" size={30} color="black" style ={{position: 'absolute', top: -50, right: 20, zIndex:10}}
+          onPress={exportCSV}/>
       </View>
       <View style={styles.searchBox}>
         <Ionicons name="search" size={20} color="#888" style={styles.icon} />
