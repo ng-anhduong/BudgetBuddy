@@ -32,7 +32,7 @@ export default function AnalyticsScreen() {
 
   const { expenses, categories, loading, error, reload } = useAnalytics(period, refDate);
 
-   // Reload whenever access this screen
+  // Reload whenever access this screen
   useFocusEffect(
     React.useCallback(() => {
       refetchCurrency();
@@ -41,11 +41,7 @@ export default function AnalyticsScreen() {
     }, [refetchCurrency])
   );
 
-  // if ( loading || preferenceCurrencyLoading ) {
-  //   return <ActivityIndicator style={{ flex: 1 }} />;
-  // }
-
-  /* ---------- BarChart data ---------- */
+  // BarChart data 
   const labels = expenses.map((e) =>
     format(new Date(e.date), period === "weekly" ? "E" : "d")
   );
@@ -63,15 +59,16 @@ export default function AnalyticsScreen() {
     return `${first} – ${last}`;
   })();
 
-  /* ---------- PieChart data (max 5 slices) ---------- */
+  // PieChart data, displaying at most 5 categories
+  // If there are more than 5, aggregate the rest into "Others"
   const pieData = useMemo(() => {
     if (!categories.length) return [];
 
-    // 1. Sort categories by descending amount so the biggest spenders are first
+    // Sort categories by descending amount so the biggest spenders are first
     const sorted = [...categories].sort((a, b) => b.amount - a.amount);
     const MAX_SLICES = 5;
 
-    // 2. If we already have 5 or fewer categories, show them all
+    // If we already have 5 or fewer categories, show them all
     if (sorted.length <= MAX_SLICES) {
       return sorted.map((c, idx) => ({
         name: c.category,
@@ -82,12 +79,13 @@ export default function AnalyticsScreen() {
       }));
     }
 
-    // 3. Otherwise, keep the top 4 and aggregate the rest into "Others"
+    // Otherwise, keep the top 4 and aggregate the rest into "Others"
     const major = sorted.slice(0, MAX_SLICES - 1);
     const othersAmount = sorted
       .slice(MAX_SLICES - 1)
       .reduce((sum, c) => sum + c.amount, 0);
 
+    // Legend
     const chartReady = major.map((c, idx) => ({
       name: c.category,
       population: c.amount,
@@ -103,7 +101,6 @@ export default function AnalyticsScreen() {
       legendFontColor: "#333",
       legendFontSize: 12,
     });
-
     return chartReady;
   }, [categories]);
 
@@ -115,10 +112,13 @@ export default function AnalyticsScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff'}}>
       <ScrollView contentContainerStyle={styles.container}>
 
-        {/* ===== Title ===== */}
+        {/* Screen title */}
         <Text style={styles.screenTitle}>Analytics</Text>
+
+        {/* BarChart title */}
         <Text style={styles.chartTitle}>Spending amount</Text>
-        {/* ===== Header controls ===== */}
+
+        {/* Header controls */}
         <View style={styles.row}>
           <Button title="<" onPress={() => shiftDate(-1)} />
           <Text
@@ -138,14 +138,13 @@ export default function AnalyticsScreen() {
         {loading && <ActivityIndicator size="large" style={{ marginTop: 40 }} />}
         {error   && <Text style={{ color: "red" }}>{error.message}</Text>}
 
-        {/* ===== BarChart ===== */}
+        {/* BarChart */}
         {!loading && !error && !!expenses.length && (
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <BarChart
               data={{ labels, datasets: [{ data: totals }] }}
               width={Math.max(labels.length * 60, screenW - 32)}
               height={220}
-              // yAxisSuffix={!currency ? ' SGD' : ' ' + currency}
               fromZero
               showValuesOnTopOfBars={false}
               chartConfig={chartCfg}
@@ -155,8 +154,10 @@ export default function AnalyticsScreen() {
           </ScrollView>
         )}
 
+        {/* PieChart title */}
         <Text style={styles.chartTitle}>Spending categories</Text>
-        {/* ===== PieChart ===== */}
+
+        {/* PieChart */}
         {!loading && !error && !!pieData.length && (
             <PieChart
               data={pieData}
@@ -174,7 +175,7 @@ export default function AnalyticsScreen() {
   );
 }
 
-/* ----- styles & chart config ----- */
+// BarChart config
 const chartCfg = {
   backgroundGradientFrom: "#fff",
   backgroundGradientTo:   "#fff",

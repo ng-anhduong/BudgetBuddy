@@ -12,13 +12,13 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import numeral from 'numeral';
 
 export default function GroupDetails() {
-  // ─── Hooks & State (always at top) ───────────────────────────────────────────
+  // hooks
   const { expense, group_id } = useLocalSearchParams();
   const curr = JSON.parse(expense)
   const router = useRouter();
   // Font loading
   const [loaded, error] = useFonts({ Inter_500Medium });
-  // ─── Early returns (now safe, because hooks are already called) ───────────────
+  // Early returns (now safe, because hooks are already called) 
   if (!loaded && !error) {
     return null; // font not ready
   }
@@ -49,7 +49,6 @@ export default function GroupDetails() {
           }]}>
             {item.settled ? "✔" : "✖"} {item.name} owes {numeral(item.amount).format('0.0 a')} {item.currency}
           </Text>
-
         </View>
       </TouchableOpacity>
     );
@@ -78,7 +77,6 @@ export default function GroupDetails() {
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -97,15 +95,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  search: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    fontSize: 16,
-  },
   card: {
     borderRadius: 16,
     padding: 16,
@@ -119,14 +108,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  description: {
-    fontSize: 14,
-    color: '#555',
-    marginTop: 4,
-  },
-  details: {
-    alignItems: 'flex-end',
-  },
   amount: {
     fontSize: 16,
     fontWeight: '600',
@@ -135,16 +116,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#777',
     marginTop: 4,
-  },
-  floatingButton: {
-    position: 'absolute',
-    bottom: 50,
-    right: 24,
-    backgroundColor: '#4CAF50',
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

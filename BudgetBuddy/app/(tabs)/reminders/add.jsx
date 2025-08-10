@@ -63,6 +63,7 @@ export default function AddReminder({ visible, onClose }) {
           </Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
+
             {/* Description */}
             <Text style={[GS.footerText, styles.label]}>Description</Text>
             <TextInput
@@ -124,6 +125,8 @@ export default function AddReminder({ visible, onClose }) {
 }
 
 const styles = StyleSheet.create({
+  
+  // General
   backdrop: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -140,42 +143,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
-  // ── Picker Wrapper ───────────────────────────────────────────────────────────
-  pickerWrapper: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 15,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    color: '#000',
-    backgroundColor: '#f5f5f5',
-    ...Platform.select({
-      web: {
-        borderWidth: 0,
-        appearance: 'none',
-        WebkitAppearance: 'none',
-        paddingHorizontal: 12,
-      },
-      ios: {},
-      android: {},
-    }),
-  },
-  webArrow: {
-    position: 'absolute',
-    right: 12,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    pointerEvents: 'none',
-  },
-
-  // ── Buttons ─────────────────────────────────────────────────────────────────────
+  // Button
   addButton: {
     marginTop: 16,
     marginBottom: 12,

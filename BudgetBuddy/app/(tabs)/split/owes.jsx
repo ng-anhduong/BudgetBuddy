@@ -17,7 +17,7 @@ import numeral from 'numeral';
 import socket from '@/constants/socket';
 
 export default function GroupOwes() {
-  // ─── Hooks & State (always at top) ───────────────────────────────────────────
+  // hooks
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const settle = useSettleGroupExpense();
@@ -47,7 +47,7 @@ export default function GroupOwes() {
     };
   }, [id, refetch]);
 
-  // ─── Early returns (now safe, because hooks are already called) ───────────────
+  // Early returns (now safe, because hooks are already called) 
   if (!loaded && !error) {
     return null; // font not ready
   }
@@ -136,7 +136,6 @@ export default function GroupOwes() {
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -201,13 +200,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-
   settleBtn: {
     backgroundColor: '#1976D2',   
     paddingHorizontal: 16,
@@ -220,7 +217,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 14,
   },
-
   category: {
     fontSize: 16,
     fontWeight: '600',

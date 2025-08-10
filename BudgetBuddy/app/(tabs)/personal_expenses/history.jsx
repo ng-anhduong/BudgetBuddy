@@ -24,7 +24,7 @@ export default function AllExpenses() {
   // load user's preference 
   const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
 
-      /* ────────── local state for the field ────────── */
+  // local state for the field 
   const [openCurrency, setOpenCurrency] = useState(false);
   
   // set visible currency variable
@@ -59,6 +59,7 @@ export default function AllExpenses() {
     item.description.toLowerCase().includes(query.toLowerCase())
   );
 
+  // render each item in the list
   const renderItem = ({ item, index }) => {
     const date = new Date(item.time);
     const day = date.getDate();
@@ -97,6 +98,7 @@ export default function AllExpenses() {
         <Ionicons name="arrow-back" size={24} color="black" style={{paddingRight: '24%',}}
           onPress = {() => router.replace('/(tabs)/personal_expenses/expenses')}
         />
+        {/* Title  */}
         <Text style={styles.title}>All Expenses</Text>
         
       </View>
@@ -114,6 +116,7 @@ export default function AllExpenses() {
           onChangeText={setQuery}
         />
       </View>
+
       {/* Currency setting box */}
       <View style={styles.currencyRow}>
         <View style={{ flex: 0.75, marginRight: 8 }}>
@@ -126,7 +129,7 @@ export default function AllExpenses() {
                   setOpen={setOpenCurrency}
                   setValue={setCurrency}    
 
-                  /* ---- fixed light palette ---- */
+                  // fixed light palette
                   style={styles.dropdown}
                   dropDownContainerStyle={styles.dropdownContainer}
                   textStyle={styles.dropdownText}
@@ -137,7 +140,8 @@ export default function AllExpenses() {
                   zIndex={10}        
           />
         </View>
-        {/* action button */}
+
+        {/* change button */}
         <TouchableOpacity
           style={[styles.changeBtn, { flex: 0.25 }]} 
           onPress={() =>
@@ -165,6 +169,7 @@ export default function AllExpenses() {
 }
 
 const styles = StyleSheet.create({
+  // General
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -216,14 +221,15 @@ const styles = StyleSheet.create({
     color: '#777',
     marginTop: 4,
   },
-  
+
+  // Search box
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#f1f1f1',   // light grey backdrop
     borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: Platform.OS === 'ios' ? 10 : 6, // tweak for platform
+    paddingVertical: Platform.OS === 'ios' ? 10 : 6, 
     marginBottom: 16,
   },
   icon: {
@@ -234,19 +240,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 0,            // remove default vertical padding on iOS
   },
+
+  // Currency setting box
   currencyRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
   currencyPicker: {
-    flex: 1,                 // takes remaining width
+    flex: 1,                
     backgroundColor: '#f4f4f4',
     borderRadius: 10,
     marginRight: 10,
     height: 50,
     paddingVertical: 12,
   },
+
+  // Change button
   changeBtn: {
     backgroundColor: '#4CAF50',
     paddingHorizontal: 15,

@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // for the floating "+" button
+import { Ionicons } from '@expo/vector-icons'; 
 import { useRouter } from 'expo-router';
 import { useNewestExpenses, useUsername } from '@/hooks/data';
 import { useFocusEffect } from "@react-navigation/native";
@@ -48,7 +48,7 @@ export default function ExpensesScreen() {
 
   
 
-  // 5) Render a single transaction row
+  // Render a single transaction row
   const renderItem = ({ item, index }) => {
     // Format the date to DD/MM/YYYY
     const itemDate = new Date(item.time);
@@ -106,13 +106,13 @@ export default function ExpensesScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* ── 1) Summary Card ───────────────────────────────────────────────────────── */}
+      {/* Summary Card */}
       <View style={styles.summaryCard}>
         <Text style={styles.summaryText}>Today, you have spent...</Text>
         <Text style={styles.summaryAmount}> {numeral(expenses.total).format('0.0 a')} {expenses.currency}</Text>
       </View>
 
-      {/* ── 3) FlatList of Only the 5 Most Recent Expenses ────────────────────────── */}
+      {/* FlatList of Only the 5 Most Recent Expenses */}
       <FlatList
         data={expenses.newestExpenses}
         renderItem={renderItem}
@@ -123,7 +123,7 @@ export default function ExpensesScreen() {
         )}
       />
 
-      {/* ── 4) “See Full History” button (Below the 5 Items) ─────────────────────────── */}
+      {/* "See Full History" button (Below the 5 Items) */}
       <TouchableOpacity
         onPress={() => router.push('/(tabs)/personal_expenses/history')}
         style={styles.historyButton}
@@ -134,7 +134,7 @@ export default function ExpensesScreen() {
         </Text>
       </TouchableOpacity>
 
-      {/* ── 5) Floating “+” Button ────────────────────────────────────────────────── */}
+      {/* Floating "+" Button  */}
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => setAddVisible(true)}
@@ -142,13 +142,15 @@ export default function ExpensesScreen() {
         <Ionicons name="add-outline" size={32} color="#fff" />
       </TouchableOpacity>
 
-      {/* ── 6) AddExpenseModal ─────────────────────────────────────────────────────── */}
+      {/* AddExpenseModal */}
       <AddExpenseModal visible={addVisible} onClose={() => setAddVisible(false)} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+
+  // General
   container: {
     flex: 1,
     backgroundColor: '#FFF',
@@ -188,24 +190,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  alertBlock: {
-    backgroundColor: '#5B57D3',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
-  },
-  alertText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  alertContent: {
-    color: '#fff',
-    fontSize: 14,
-  },
-
-  // ── Summary Card ─────────────────────────────────────────────────────────────
+  // Summary Card 
   summaryCard: {
     backgroundColor: '#9BE8F0',
     borderRadius: 16,
@@ -224,15 +209,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
 
-  // ── “Latest transactions” Header ─────────────────────────────────────────────
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 8,
-    textAlign:'center',
-  },
-
-  // ── Each Transaction Row ─────────────────────────────────────────────────────
+  // Each Transaction Row 
   transactionCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -276,16 +253,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
 
+  // History Button
   historyButton: {
     backgroundColor: '#4CAF50',
     borderRadius: 28,          
-    flexDirection: 'row',      // icon + text side-by-side
+    flexDirection: 'row',      
     alignItems: 'center',
-    alignSelf: 'center',       // centers the button in its parent
-    paddingHorizontal: 24,     // room for text
+    alignSelf: 'center',       
+    paddingHorizontal: 24,     
     paddingVertical: 12,
     marginBottom: 20,
-
     // iOS shadow
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -293,17 +270,16 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     // Android elevation
     elevation: 5,
-    marginTop: 24,             // space above if you keep it in a column
+    marginTop: 24,          
   },
-
   historyText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-    marginLeft: 8,             // gap between icon and text
+    marginLeft: 8,             
   },
 
-  // ── Floating "+" and see full history Button ───────────────────────────────────────────────────────
+  // Floating "+" Button 
   floatingButton: {
     position: 'absolute',
     bottom: 20,

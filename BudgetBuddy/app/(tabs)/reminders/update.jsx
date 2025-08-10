@@ -84,7 +84,7 @@ export default function AddExpense() {
       <ScrollView contentContainerStyle={[GS.card, { padding: 24, paddingTop: 50, backgroundColor: '#fff' }]}>
       <Text style={GS.title}>Update Subscription & Reminder</Text>
 
-      {/* ─── “Description”  ─────────────────────────────── */}
+      {/* Description */}
       <Text style={GS.footerText}>Description</Text>
       <TextInput
         style={GS.input}
@@ -131,17 +131,17 @@ export default function AddExpense() {
         <Text style={GS.buttonText}>Renew</Text>
       </TouchableOpacity>
 
-      {/* ─── Save Button (navigates back after saving) ──────────────────────────────── */}
+      {/* Save Button (navigates back after saving) */}
       <TouchableOpacity onPress={onSave} style={GS.button}>
         <Text style={GS.buttonText}>Save</Text>
       </TouchableOpacity>
 
-      {/* ─── Delete Button ───────────────────────────────────────────────────────────── */}
+      {/* Delete Button */}
       <TouchableOpacity onPress={onDelete} style={[GS.button, { backgroundColor: '#f88' }]}>
         <Text style={[GS.buttonText, { color: '#fff' }]}>Delete</Text>
       </TouchableOpacity>
 
-      {/* ─── Cancel Button ───────────────────────────────────────────────────────────── */}
+      {/* Cancel Button */}
       <TouchableOpacity onPress={onCancel} style={[GS.button, { backgroundColor: '#ddd' }]}>
         <Text style={[GS.buttonText, { color: '#000' }]}>Cancel</Text>
       </TouchableOpacity>
@@ -200,17 +200,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#777',
     marginTop: 4,
-  },
-  pickerWrapper: {
-        borderWidth: 1,
-
-        borderRadius: 4,
-        marginBottom: 12,
-        overflow: "hidden",
-  },
-  picker: {
-      height: 50,
-      width: "100%",
   },
 });
 

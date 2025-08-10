@@ -121,6 +121,7 @@ export default function AllLimits() {
           </TouchableOpacity>
       );
     };
+
     // Screen
     return (
     <View style={styles.container}>
@@ -149,6 +150,8 @@ export default function AllLimits() {
 }
 
 const styles = StyleSheet.create({
+
+  // General
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -161,70 +164,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  search: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    fontSize: 16,
-  },
   card: {
     borderRadius: 16,
-    padding: 16,
+    padding: 20,
+    marginBottom: 16,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "600",
     marginBottom: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    elevation: 2,
   },
-  category: {
-    fontSize: 16,
-    fontWeight: '600',
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
   },
-  description: {
-    fontSize: 14,
-    color: '#555',
-    marginTop: 4,
-  },
-  details: {
-    alignItems: 'flex-end',
-  },
-  amount: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  date: {
+  label: {
     fontSize: 12,
-    color: '#777',
-    marginTop: 4,
+    color: "#666",
   },
-  pickerWrapper: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 15,
-    overflow: 'hidden',
-    position: 'relative',
+  value: {
+    fontSize: 20,
+    fontWeight: "700",
   },
-  picker: {
-    height: 50,
-    width: '100%',
-    color: '#000',
-    backgroundColor: '#f5f5f5',
-    ...Platform.select({
-      web: {
-        borderWidth: 0,
-        appearance: 'none',
-        WebkitAppearance: 'none',
-        paddingHorizontal: 12,
-      },
-      ios: {},
-      android: {},
-    }),
-  },
+
+  // Button 
   floatingButton: {
     position: 'absolute',
     bottom: 20,
@@ -236,44 +200,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  card: {
-  borderRadius: 16,
-  padding: 20,
-  marginBottom: 16,
-},
-
-cardTitle: {
-  fontSize: 18,
-  fontWeight: "600",
-  marginBottom: 12,
-},
-
-row: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  marginBottom: 12,
-},
-
-label: {
-  fontSize: 12,
-  color: "#666",
-},
-
-value: {
-  fontSize: 20,
-  fontWeight: "700",
-},
-
-progressBar: {
-  height: 10,
-  borderRadius: 5,
-  backgroundColor: "rgba(0,0,0,0.1)",
-  overflow: "hidden",
-},
-
-progressFill: {
-  height: "100%",
-  backgroundColor: "#CE5C5E", 
-},
-
+  
+  // Progress bar
+  progressBar: {
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "rgba(0,0,0,0.1)",
+    overflow: "hidden",
+  },
 });

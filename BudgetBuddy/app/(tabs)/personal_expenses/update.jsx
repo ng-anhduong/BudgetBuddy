@@ -19,16 +19,16 @@ import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter';
 import { GlobalStyles as GS } from '@/constants/GlobalStyles';
 
 export default function UpdateExpense() {
-  // ─── Hooks & State (always at top) ───────────────────────────────────────────
+  // hooks
   const { id } = useLocalSearchParams();
   const update = useUpdateExpense();
   const remove = useDeleteExpense();
   const router = useRouter();
 
-  // Font loading
+  // load fonts
   const [loaded, error] = useFonts({ Inter_500Medium });
 
-  // Form state & loading
+  // form state and loading
   const {
     category,
     setCategory,
@@ -65,10 +65,10 @@ export default function UpdateExpense() {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-    /* ────────── local state for the field ────────── */
+  // local state for the field 
   const [openCurrency, setOpenCurrency] = useState(false);
 
-  // ─── Early returns (now safe, because hooks are already called) ───────────────
+  // Early returns (now safe, because hooks are already called) 
   if (!loaded && !error) {
     return null; // font not ready
   }
@@ -76,7 +76,7 @@ export default function UpdateExpense() {
     return <ActivityIndicator style={{ flex: 1 }} />;
   }
 
-  // ─── Handlers ─────────────────────────────────────────────────────────────────
+  // Handlers 
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -104,7 +104,6 @@ export default function UpdateExpense() {
     ]);
   };
 
-
   const onSave = async () => {
     await updateExpense();
     router.replace('/(tabs)/personal_expenses/history');
@@ -121,7 +120,7 @@ export default function UpdateExpense() {
     <ScrollView contentContainerStyle={[GS.card, { paddingTop: 70, backgroundColor: '#fff' }]}>
       <Text style={GS.title}>Update Expense</Text>
 
-      {/* ─── “Description”  ─────────────────────────────── */}
+      {/* Description */}
       <Text style={[GS.footerText, styles.label]}>Description</Text>
       <TextInput
         style={GS.input}
@@ -131,7 +130,7 @@ export default function UpdateExpense() {
         onChangeText={setDescription}
       />
 
-      {/* ─── Currency (moved above Amount, with unified styling) ───────────────────── */}
+      {/* Currency */}
       <Text style={[GS.footerText, styles.label]}>Currency</Text>
         <DropDownPicker
                 open={openCurrency}
@@ -152,7 +151,7 @@ export default function UpdateExpense() {
                 zIndex={10}        /* avoids overlap inside ScrollViews / modals */
         />
 
-      {/* ─── Amount ─────────────────────────────────────────────────────────────── */}
+      {/* Amount */}
       <Text style={[GS.footerText, styles.label]}>Amount</Text>
       <TextInput
         style={GS.input}
@@ -162,7 +161,7 @@ export default function UpdateExpense() {
         onChangeText={setAmount}
       />
 
-      {/* ─── Select a Category (now between Amount and Date) ───────────────────────── */}
+      {/* Select a Category (now between Amount and Date) */}
       <Text style={[GS.footerText, styles.label]}>Select a Category</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginVertical: 5 }}>
         {expense_types.map((type, i) => {
@@ -185,7 +184,7 @@ export default function UpdateExpense() {
         })}
       </ScrollView>
 
-      {/* ─── Date (single field, same style as Add modal) ───────────────────────────── */}
+      {/* Date (single field, same style as Add modal) */}
       <Text style={[GS.footerText, styles.label]}>Date</Text>
       {Platform.OS === 'web' ? (
         <TextInput
@@ -220,17 +219,17 @@ export default function UpdateExpense() {
         </>
       )}
 
-      {/* ─── Save Button (navigates back after saving) ──────────────────────────────── */}
+      {/* Save Button (navigates back after saving) */}
       <TouchableOpacity onPress={onSave} style={GS.button}>
         <Text style={GS.buttonText}>Save</Text>
       </TouchableOpacity>
 
-      {/* ─── Delete Button ───────────────────────────────────────────────────────────── */}
+      {/* Delete Button */}
       <TouchableOpacity onPress={onDelete} style={[GS.button, { backgroundColor: '#f88' }]}>
         <Text style={[GS.buttonText, { color: '#fff' }]}>Delete</Text>
       </TouchableOpacity>
 
-      {/* ─── Cancel Button ───────────────────────────────────────────────────────────── */}
+      {/* Cancel Button */}
       <TouchableOpacity onPress={onCancel} style={[GS.button, { backgroundColor: '#ddd' }]}>
         <Text style={[GS.buttonText, { color: '#000' }]}>Cancel</Text>
       </TouchableOpacity>
@@ -239,7 +238,7 @@ export default function UpdateExpense() {
 }
 
 const styles = StyleSheet.create({
-  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  // Dropdown 
   dropdown: {
     backgroundColor: '#fff',
     borderColor: '#ccc',
