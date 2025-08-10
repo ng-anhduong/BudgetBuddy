@@ -24,10 +24,10 @@ import { useFocusEffect } from "@react-navigation/native";
 export default function AddExpenseModal({ visible, onClose }) {
   const router = useRouter();
 
-  // 1) Load Inter font
+  // load fonts
   const [loaded, error] = useFonts({ Inter_500Medium });
 
-  // 2) Other hooks (always called in same order)
+  // other hooks (always called in same order)
   const add = useAddExpense();
   const {
     category,
@@ -54,7 +54,7 @@ export default function AddExpenseModal({ visible, onClose }) {
   // Reload whenever access this screen
   const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
 
-    /* ────────── local state for the field ────────── */
+  // local state for the field 
   const [openCurrency, setOpenCurrency] = useState(false);
 
   useEffect(()=>{
@@ -72,11 +72,12 @@ export default function AddExpenseModal({ visible, onClose }) {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // 3) Early return if font not loaded
+  // early return if font not loaded
   if (!loaded && !error) {
     return null;
   }
-  // 4) Early return if form data still loading
+
+  // early return if form data still loading
   if (load1 || load2) {
     return (
       <View style={styles.spinnerContainer}>
@@ -85,7 +86,7 @@ export default function AddExpenseModal({ visible, onClose }) {
     );
   }
 
-  // 5) Handle date selection on native
+  // handle date selection on native
   const onDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -99,10 +100,10 @@ export default function AddExpenseModal({ visible, onClose }) {
     }
   };
 
-  // 6) Pastel colors for category pills
+  // pastel colors for category pills
   const pastelColors = ['#D0E8F2', '#FADADD', '#C1F0DC', '#FFFACD', '#EADCF2', '#FFEDCC'];
 
-  // 7) For Add button to close the modal
+  // for Add button to close the modal
   const onAddPress = async () => {
     await addExpense();     // wait for submit to complete
     onClose();              // close modal after success
@@ -124,6 +125,7 @@ export default function AddExpenseModal({ visible, onClose }) {
             </Text>
 
             <ScrollView showsVerticalScrollIndicator={false}>
+
               {/* Description */}
               <Text style={[GS.footerText, styles.label]}>Description</Text>
               <TextInput
@@ -144,7 +146,7 @@ export default function AddExpenseModal({ visible, onClose }) {
                 setOpen={setOpenCurrency}
                 setValue={setCurrency}    
 
-                /* ---- fixed light palette ---- */
+                // fixed light palette
                 style={styles.dropdown}
                 dropDownContainerStyle={styles.dropdownContainer}
                 textStyle={styles.dropdownText}
@@ -152,7 +154,7 @@ export default function AddExpenseModal({ visible, onClose }) {
 
                 placeholder="Select"
                 searchable
-                zIndex={10}        /* avoids overlap inside ScrollViews / modals */
+                zIndex={10}        
               />
 
               {/* Amount */}
@@ -249,6 +251,8 @@ export default function AddExpenseModal({ visible, onClose }) {
 }
 
 const styles = StyleSheet.create({
+
+  // General
   backdrop: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -265,7 +269,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
-  // ── Buttons ─────────────────────────────────────────────────────────────────────
+  // Buttons 
   addButton: {
     marginTop: 16,
     marginBottom: 12,
@@ -292,7 +296,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
 
-  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  // Dropdown 
   dropdown: {
     backgroundColor: '#fff',
     borderColor: '#ccc',

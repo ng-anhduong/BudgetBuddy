@@ -41,7 +41,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
     // Reload whenever access this screen
     const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
     
-      /* ────────── local state for the field ────────── */
+    // local state for the field 
     const [openCurrency, setOpenCurrency] = useState(false);
       
     useEffect(()=>{
@@ -83,8 +83,8 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
     <Modal animationType="slide" transparent visible={visible} onRequestClose={onClose}>
       <ScrollView
         contentContainerStyle={{         
-          flexGrow: 1,                    //     make container fill the screen
-          justifyContent: 'flex-end',     //     push its child (backdrop) to the bottom
+          flexGrow: 1,                   
+          justifyContent: 'flex-end',     
         }}
         keyboardShouldPersistTaps="handled"
       >
@@ -102,7 +102,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
               onChangeText={setNote}
             />
 
-            {/* Amount field takes 65% of the space, with a little right margin */}
+            {/* Amount field */}
             <Text style={[GS.footerText, styles.label]}>Amount</Text>
                 <TextInput
                   style={GS.input}
@@ -113,7 +113,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
                   onChangeText={setAmount}
             />
 
-            {/* Currency field takes the rest (35%) */}
+            {/* Currency field */}
             <Text style={[GS.footerText, styles.label]}>Currency</Text>
             <DropDownPicker
               open={openCurrency}
@@ -123,7 +123,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
               setOpen={setOpenCurrency}
               setValue={setCurrency}    
 
-              /* ---- fixed light palette ---- */
+              // fixed light palette 
               style={styles.dropdown}
               dropDownContainerStyle={styles.dropdownContainer}
               textStyle={styles.dropdownText}
@@ -131,7 +131,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
 
               placeholder="Select"
               searchable
-              zIndex={10}        /* avoids overlap inside ScrollViews / modals */
+              zIndex={10}        
             />
 
             {/* Date */}
@@ -181,7 +181,6 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
             </View>
 
             <View
-              
               contentContainerStyle={{ paddingVertical: 0 }}
               keyboardShouldPersistTaps="always"
               showsVerticalScrollIndicator={true}
@@ -231,8 +230,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
                   </Picker>
                   </View>
                   }
-                  
-                  
+                                    
                   <View style={{width: '35%', height: '100%',}}>   
                       <TextInput
                         style={{height: '100%', textAlign: 'center'}}
@@ -247,11 +245,7 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
                     </View>
                 </View> 
               ))}
-
-              
             </View>
-            
-
               <Text style={{color: total == amount ? 'green': 'red', paddingVertical:5}}>Total: {total} / {amount} {currency}</Text>
 
               <TouchableOpacity onPress={onSubmit} style={styles.addButton}>
@@ -270,6 +264,8 @@ export default function AddGroupExpense({ visible, onClose, data, group_id }) {
 }
 
 const styles = StyleSheet.create({
+
+  // General
   backdrop: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -286,7 +282,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
-  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  // Dropdown 
   dropdown: {
     backgroundColor: '#fff',
     borderColor: '#ccc',
@@ -298,7 +294,6 @@ const styles = StyleSheet.create({
   dropdownText: {
     color: '#000',
   },
-
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -306,13 +301,11 @@ const styles = StyleSheet.create({
     marginTop: 24,             
     marginBottom: 4,
   },
-
   sectionTitle: {
     fontSize: 18,
     fontFamily: 'Inter_500Medium',
     color: '#4CAF50',
   },
-
   fab: {
     width: 36,
     height: 36,
@@ -322,9 +315,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 3,
   },
-
   fabText: { color: '#fff', fontSize: 24, lineHeight: 24 },
-  // ── Buttons ─────────────────────────────────────────────────────────────────────
+
+  // Buttons 
   addButton: {
     marginTop: 16,
     marginBottom: 12,

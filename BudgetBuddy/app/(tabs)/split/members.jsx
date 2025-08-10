@@ -17,7 +17,7 @@ import AddGroupExpense from './addExpense';
 import socket from '@/constants/socket';
 
 export default function GroupDetails() {
-  // ─── Hooks & State (always at top) ───────────────────────────────────────────
+  // hooks
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const left = useLeaveGroup();
@@ -48,7 +48,7 @@ export default function GroupDetails() {
     };
   }, [id, refetchDetails]);
 
-  // ─── Early returns (now safe, because hooks are already called) ───────────────
+  // Early returns (now safe, because hooks are already called)
   if (!loaded && !error) {
     return null; // font not ready
   }
@@ -84,20 +84,6 @@ export default function GroupDetails() {
           />
           </View>
             <Text style={styles.grpID}>Group code: #{details.group_id}</Text>
-            {/* <View style={{
-              height:'50%',
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 12,
-              // iOS shadow
-              backgroundColor:'white',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 3,
-              // Android elevation
-              elevation: 3,
-              }}> */}
               <Text style={styles.title}>Members</Text>
               <FlatList
                 data={details.members}
@@ -118,7 +104,6 @@ export default function GroupDetails() {
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, TouchableWithoutFeedback, Modal, ActivityIndicator, TextInput, View, Text, Alert, TouchableOpacity, StyleSheet, } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, Modal, ActivityIndicator, TextInput, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import DropDownPicker from "react-native-dropdown-picker";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
@@ -31,7 +31,7 @@ export default function AddLimit({ visible, onClose }) {
     // Reload whenever access this screen
     const { data: preferenceCurrency, loading: preferenceCurrencyLoading, refetch: refetchCurrency } = useCurrencyPreference();
     
-      /* ────────── local state for the field ────────── */
+    // local state for the field 
     const [openCurrency, setOpenCurrency] = useState(false);
   
     useEffect(()=>{
@@ -126,7 +126,7 @@ export default function AddLimit({ visible, onClose }) {
               setOpen={setOpenCurrency}
               setValue={setCurrency}    
 
-              /* ---- fixed light palette ---- */
+              // fixed light palette 
               style={styles.dropdown}
               dropDownContainerStyle={styles.dropdownContainer}
               textStyle={styles.dropdownText}
@@ -134,7 +134,7 @@ export default function AddLimit({ visible, onClose }) {
 
               placeholder="Select"
               searchable
-              zIndex={10}        /* avoids overlap inside ScrollViews / modals */
+              zIndex={10}        
             />
 
             {/* Select a Category */}
@@ -209,6 +209,8 @@ export default function AddLimit({ visible, onClose }) {
 }
 
 const styles = StyleSheet.create({
+
+  // General
   backdrop: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -220,7 +222,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
-  // ── Buttons ─────────────────────────────────────────────────────────────────────
+  // Buttons 
   addButton: {
     marginTop: 16,
     marginBottom: 12,
@@ -246,7 +248,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_500Medium',
     color: '#000',
   },
-    // ── Pill  
+  
+  // Pill  
   pill: {
     paddingVertical: 4,            
     paddingHorizontal: 14,
@@ -256,7 +259,7 @@ const styles = StyleSheet.create({
   justifyContent: 'center',
   },
 
-  // ── Dropdown Styles ───────────────────────────────────────────────────────────
+  // Dropdown
   dropdown: {
     backgroundColor: '#fff',
     borderColor: '#ccc',

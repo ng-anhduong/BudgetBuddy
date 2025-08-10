@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { TextInput, View, Text, StyleSheet, Platform, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { TextInput, View, Text, StyleSheet, Platform, Modal, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { useCreateGroup, useJoinGroup } from "@/hooks/crud";
 import { GlobalStyles as GS } from '@/constants/GlobalStyles';
@@ -37,50 +37,57 @@ export default function AddGroup({ visible, onClose }) {
         visible={visible}
         onRequestClose={onClose}
       >
-      <View style={styles.backdrop}>
-        <View style={GS.card}>
-          <Text style={[GS.title, { color: '#4CAF50', alignSelf: 'center' }]}>
-            Create a new group or join a current group
-          </Text>
+        {/* For iOS keyboard to not cover the input fields */}
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? -20 : 0}
+        >
+          <View style={styles.backdrop}>
+            <View style={GS.card}>
+              <Text style={[GS.title, { color: '#4CAF50', alignSelf: 'center' }]}>
+                Create a new group or join a current group
+              </Text>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {/* Description */}
-            <Text style={[GS.footerText, styles.label]}>Name</Text>
-            <TextInput
-              style={GS.input}
-              placeholder="e.g. JB trip"
-              placeholderTextColor={GS.placeholder}
-              value={name}
-              onChangeText={setName}
-            />
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {/* Group name */}
+                <Text style={[GS.footerText, styles.label]}>Name</Text>
+                <TextInput
+                  style={GS.input}
+                  placeholder="e.g. JB trip"
+                  placeholderTextColor={GS.placeholder}
+                  value={name}
+                  onChangeText={setName}
+                />
 
-            {/* Add Button */}
-            <TouchableOpacity onPress={onAddPress1} style={styles.addButton}>
-              <Text style={styles.addButtonText}>Add</Text>
-            </TouchableOpacity>
+                {/* Add Button */}
+                <TouchableOpacity onPress={onAddPress1} style={styles.addButton}>
+                  <Text style={styles.addButtonText}>Add</Text>
+                </TouchableOpacity>
 
-            {/* Description */}
-            <Text style={[GS.footerText, styles.label]}>Group code</Text>
-            <TextInput
-              style={GS.input}
-              placeholder="e.g. 123456"
-              placeholderTextColor={GS.placeholder}
-              value={code}
-              onChangeText={setCode}
-            />
+                {/* Group code */}
+                <Text style={[GS.footerText, styles.label]}>Group code</Text>
+                <TextInput
+                  style={GS.input}
+                  placeholder="e.g. 123456"
+                  placeholderTextColor={GS.placeholder}
+                  value={code}
+                  onChangeText={setCode}
+                />
 
-            {/* Add Button */}
-            <TouchableOpacity onPress={onAddPress2} style={styles.addButton}>
-              <Text style={styles.addButtonText}>Join</Text>
-            </TouchableOpacity>
+                {/* Add Button */}
+                <TouchableOpacity onPress={onAddPress2} style={styles.addButton}>
+                  <Text style={styles.addButtonText}>Join</Text>
+                </TouchableOpacity>
 
-            {/* Back Button */}
-            <TouchableOpacity onPress={onClose} style={styles.backButton}>
-              <Text style={[styles.backButtonText]}>Back</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>  
-      </View>
+                {/* Back Button */}
+                <TouchableOpacity onPress={onClose} style={styles.backButton}>
+                  <Text style={[styles.backButtonText]}>Back</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>  
+          </View>
+       </KeyboardAvoidingView>
     </Modal>
     );
 }
@@ -101,31 +108,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 4,
     marginTop: 12,
-  },
-
-  // Picker Wrapper
-  pickerWrapper: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 15,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    color: '#000',
-    backgroundColor: '#f5f5f5',
-  },
-  webArrow: {
-    position: 'absolute',
-    right: 12,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    pointerEvents: 'none',
   },
 
   // Buttons 

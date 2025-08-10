@@ -57,14 +57,12 @@ export default function HomeScreen() {
 
           <View style={styles.GroupText}>
             <Text style={styles.grpTitle}>{item.category} </Text>
-            {/* <Text style={styles.grpCreateDate}>{`${day}/${month}/${year}`}</Text> */}
           </View>
 
         </TouchableOpacity>
       );
     };
 
-    // Home Screen
     return (
       <>
         <View style={styles.container}>
@@ -93,7 +91,6 @@ export default function HomeScreen() {
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

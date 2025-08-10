@@ -21,7 +21,7 @@ import socket from '@/constants/socket';
 import * as Clipboard from 'expo-clipboard';
 
 export default function GroupDetails() {
-  // ─── Hooks & State (always at top) ───────────────────────────────────────────
+  // hooks
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const left = useLeaveGroup();
@@ -54,7 +54,7 @@ export default function GroupDetails() {
   }, [id, refetchDetails]);
 
 
-  // ─── Early returns (now safe, because hooks are already called) ───────────────
+  // Early returns (now safe, because hooks are already called)
   if (!loaded && !error) {
     return null; // font not ready
   }
@@ -196,18 +196,12 @@ export default function GroupDetails() {
             >
               <Ionicons name="add-outline" size={32} color="#fff" />
             </TouchableOpacity>
-            {/* <TouchableOpacity 
-                onPress={onButtonPress} 
-                style={[styles.button, { backgroundColor: '#F28589', margineTop: 8 }]}>
-                <Text style={styles.buttonText}>Leave Group</Text>
-            </TouchableOpacity> */}
             <AddGroupExpense visible={addVisible} onClose={() => setAddVisible(false)} data={JSON.stringify(details.members)} group_id={id}/>
         </View>
         </>
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -226,33 +220,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  search: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    fontSize: 16,
-  },
   card: {
     borderRadius: 20,
     paddingVertical: 14,
     paddingHorizontal: 16,
     marginBottom: 12,
     elevation: 2,
-  },
-  category: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  description: {
-    fontSize: 14,
-    color: '#555',
-    marginTop: 4,
-  },
-  details: {
-    alignItems: 'flex-end',
   },
   amount: {
     fontSize: 16,
@@ -301,30 +274,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
-  
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 6,     
   },
-
   titleText: {
     fontSize: 16,
     fontWeight: '600',
     flexShrink: 1, 
   },
-
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-
   amountText: {
     fontSize: 15,
     fontWeight: '700',
   },
-
   dateText: {
     fontSize: 14,
     color: '#555',

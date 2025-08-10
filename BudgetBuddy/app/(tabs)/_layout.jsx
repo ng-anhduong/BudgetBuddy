@@ -60,8 +60,6 @@ export default function TabsLayout() {
         }}
       />
 
-      
-
       <Tabs.Screen
         name="monthly_limit"
         options={{
@@ -93,7 +91,6 @@ export default function TabsLayout() {
           unmountOnBlur: true
         }}
       />
-      
     </Tabs>
   );
 }
