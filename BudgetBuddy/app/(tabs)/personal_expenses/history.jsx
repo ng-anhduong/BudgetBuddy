@@ -11,6 +11,7 @@ import numeral from 'numeral';
 import { GlobalStyles as GS } from '@/constants/GlobalStyles';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import AddExpenseModal from './add';
 
 export default function AllExpenses() {
   // search for params: currency when navigate to this screen
@@ -30,6 +31,9 @@ export default function AllExpenses() {
   
   // set visible currency variable
   const [currency, setCurrency] = useState("");
+
+  // modal
+  const [addVisible, setAddVisible] = useState(false);
 
   // Reload whenever access this screen
     useFocusEffect(
@@ -125,15 +129,12 @@ export default function AllExpenses() {
         flexDirection: 'row', 
         flexWrap: 'wrap',
       }}>
-        <Ionicons name="arrow-back" size={24} color="black" style={{paddingRight: '24%',}}
+        <Ionicons name="arrow-back" size={30} color="black" style={{paddingRight: '24%',}}
           onPress = {() => router.replace('/(tabs)/personal_expenses/expenses')}
         />
         {/* Title  */}
         <Text style={styles.title}>All Expenses</Text>
-        
-      </View>
-      <View>
-        <Ionicons name="share-social-outline" size={30} color="black" style ={{position: 'absolute', top: -50, right: 20, zIndex:10}}
+        <Ionicons name="share-social-outline" size={30} color="black" style ={{paddingLeft: '24%'}}
           onPress={exportCSV}/>
       </View>
       <View style={styles.searchBox}>
@@ -194,6 +195,16 @@ export default function AllExpenses() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 80 }}
       />
+
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => setAddVisible(true)}
+      >
+        <Ionicons name="add-outline" size={32} color="#fff" />
+      </TouchableOpacity>
+
+      {/* AddExpenseModal */}
+      <AddExpenseModal visible={addVisible} onClose={() => setAddVisible(false)} />
     </View>
   );
 }
@@ -297,5 +308,25 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     textAlign: 'center',
+  },
+
+  // Floating "+" Button 
+  floatingButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 24,
+    backgroundColor: '#4CAF50',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    // Android elevation
+    elevation: 5,
   },
 });
