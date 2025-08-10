@@ -93,12 +93,21 @@ export default function ProfileScreen() {
         </View>
         <View style={styles.cardContainer}>
         {/* navigation */}
-        <View style={{paddingTop:20, width:'10%'}}>
-          <Ionicons name="arrow-back" size={24} color="black" style={{paddingRight: '24%',}}
+        <View style={{
+          flexDirection: 'row', 
+          flexWrap: 'wrap',
+          justifyContent:'space-between',
+          paddingTop:20,
+        }}>
+          <Ionicons name="arrow-back" size={30} color="black" style={{paddingRight: '24%',}}
           onPress = {() => router.replace('/(tabs)/user/profile')}
         />
+        <Text style={styles.title}>Currency</Text>
+        
+        <Ionicons name="arrow-back" size={24} color="white" style={{paddingRight: '24%',}}/>
+        
         </View>
-            <Text style={GS.footerText}>Currency</Text>
+            
             <DropDownPicker
                 open={openCurrency}
                 value={currency}
@@ -126,6 +135,12 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 22,
+    fontWeight: 'normal',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
   wrapper: {
     flex: 1,
     backgroundColor: '#27592D',

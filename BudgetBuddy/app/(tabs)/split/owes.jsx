@@ -117,10 +117,19 @@ export default function GroupOwes() {
   return (
     <>
         <View style={styles.container}>
-          <Ionicons name="arrow-back" size={24} color="black" style={{paddingTop:10,}}
-            onPress={() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })}
-          />
+          <View style={{
+            flexDirection: 'row', 
+            flexWrap: 'wrap',
+            justifyContent:'space-between',
+          }}>
+            <Ionicons name="arrow-back" size={24} color="black" style={{paddingTop:10,}}
+              onPress={() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })}
+            />
             <Text style={styles.title}>List of owes</Text>
+
+            <Ionicons name="arrow-back" size={24} color="white" style={{paddingTop:10,}}/>
+          </View>
+          
             <FlatList
                 data={owes}
                 renderItem={renderItem}
@@ -128,7 +137,7 @@ export default function GroupOwes() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 20 }}
                 ListEmptyComponent={() => (
-                  <Text style={styles.emptyText}>All settled</Text>
+                  <Text style={[styles.title, {fontWeight:'normal'}]}>All settled</Text>
                 )}
             />
         </View>

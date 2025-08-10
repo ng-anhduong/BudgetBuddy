@@ -119,7 +119,7 @@ export default function ExpensesScreen() {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ paddingBottom: 20 }}
         ListEmptyComponent={() => (
-          <Text style={styles.emptyText}>No recent Expenses.</Text>
+          <Text style={[styles.title, {fontWeight:'normal'}]}>No recent Expenses.</Text>
         )}
       />
 

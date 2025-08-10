@@ -78,12 +78,21 @@ export default function GroupDetails() {
   return (
     <>
         <View style={styles.container}>
-          <View style = {{width:'10%'}}> 
+          <View style={{
+            flexDirection: 'row', 
+            flexWrap: 'wrap',
+            justifyContent:'space-between',
+          }}> 
+          
             <Ionicons name="arrow-back" size={30} color="black"
-            onPress = {() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })}
-          />
+              onPress = {() => router.replace({ pathname: '/(tabs)/split/groupDetails', params: { id: id } })}
+            />
+            
+            <Text style={[styles.grpID, {alignItems:'center'}]}>Group code: #{details.group_id}</Text>
+            
+            <Ionicons name="arrow-back" size={30} color="white"/>
+
           </View>
-            <Text style={styles.grpID}>Group code: #{details.group_id}</Text>
               <Text style={styles.title}>Members</Text>
               <FlatList
                 data={details.members}

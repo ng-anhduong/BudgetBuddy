@@ -128,13 +128,14 @@ export default function AllExpenses() {
       <View style={{
         flexDirection: 'row', 
         flexWrap: 'wrap',
+        justifyContent:'space-between',
       }}>
-        <Ionicons name="arrow-back" size={30} color="black" style={{paddingRight: '24%',}}
+        <Ionicons name="arrow-back" size={30} color="black"
           onPress = {() => router.replace('/(tabs)/personal_expenses/expenses')}
         />
         {/* Title  */}
         <Text style={styles.title}>All Expenses</Text>
-        <Ionicons name="share-social-outline" size={30} color="black" style ={{paddingLeft: '24%'}}
+        <Ionicons name="share-social-outline" size={30} color="black"
           onPress={exportCSV}/>
       </View>
       <View style={styles.searchBox}>
