@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy import update, delete
 
 # Create a blueprint
-auth_bp = Blueprint('expense_action', __name__, url_prefix='/expenses/action')
+bp = Blueprint('expense_action', __name__, url_prefix='/expenses/action')
 
 # List of allowed expense types and currencies
 ALLOWED_CATEGORIES = {e.value for e in ExpenseTypes}  # type: ignore
@@ -14,12 +14,11 @@ ALLOWED_CURRENCIES = {c.value for c in CurrencyTypes} # type: ignore
 
 # Route to add new expense
 # Return status only (201, 400, 500)
-@auth_bp.route('/add', methods=['POST'])
+@bp.route('/add', methods=['POST'])
 @jwt_required()
 def add_expense():
     # @params
     #   category: string
-    #   optional_cat: string
     #   amount: float
     #   currency: string
     #   description: string
@@ -32,7 +31,6 @@ def add_expense():
     
     category = ExpenseTypes(category) # type: ignore
 
-    optional_cat = data.get('optional_cat')
     amount = float(data.get('amount'))
 
     currency = data.get('currency')
@@ -52,7 +50,6 @@ def add_expense():
         new_trs = Expenses(
             user_id = current_user.id,          # type: ignore
             category = category,                # type: ignore
-            optional_cat = optional_cat,        # type: ignore
             amount = amount,                    # type: ignore
             currency = currency,                # type: ignore
             description = description,          # type: ignore
@@ -69,13 +66,12 @@ def add_expense():
 
 # Route to update expense
 # Return status only (201, 400, 404, 500)
-@auth_bp.route('/update', methods=['POST'])
+@bp.route('/update', methods=['POST'])
 @jwt_required()
 def update_expense():
     # @params
     #   id: int
     #   category: string
-    #   optional_cat: string
     #   amount: float
     #   currency: string
     #   description: string
@@ -89,7 +85,6 @@ def update_expense():
     
     category = ExpenseTypes(category) # type: ignore
 
-    optional_cat = data.get('optional_cat')
     amount = float(data.get('amount'))
 
     currency = data.get('currency')
@@ -109,8 +104,7 @@ def update_expense():
     try:
         upd: dict = {
             'user_id':          current_user.id, 
-            'category':         category,             
-            'optional_cat':     optional_cat,      
+            'category':         category,                   
             'amount':           amount,                
             'currency':         currency,                
             'description':      description,          
@@ -139,7 +133,7 @@ def update_expense():
 
 # Route to delete expense
 # Return status only (201, 500)
-@auth_bp.route('/delete', methods=['POST'])
+@bp.route('/delete', methods=['POST'])
 @jwt_required()
 def delete_expense():
     # @params

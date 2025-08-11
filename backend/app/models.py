@@ -1,8 +1,8 @@
 from .extension import db, CURRENCIES, EXPENSE_TYPES
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Numeric, String, Date, Text, ForeignKey, ARRAY, DateTime, Boolean
+from sqlalchemy import Numeric, String, Date, Text, ForeignKey, ARRAY, Boolean
 from sqlalchemy import Enum as SQLEnum
-from datetime import date, datetime
+from datetime import date
 import enum
 
 # enum types
@@ -48,7 +48,6 @@ class Expenses(db.Model):
     id:            Mapped[int]              = mapped_column(primary_key = True)
     user_id:       Mapped[int]              = mapped_column(ForeignKey("user.id"), nullable = False)
     category:      Mapped[str]              = mapped_column(SQLEnum(ExpenseTypes), nullable=False)  # type: ignore
-    optional_cat:  Mapped[str]              = mapped_column(String(100), nullable = True)
     amount:        Mapped[float]            = mapped_column(Numeric(scale=2), nullable = False)
     currency:      Mapped[str]              = mapped_column(SQLEnum(CurrencyTypes), nullable=False) # type: ignore
     description:   Mapped[str]              = mapped_column(Text, nullable = True)

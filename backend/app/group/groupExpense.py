@@ -2,18 +2,17 @@ from flask import jsonify, request, Blueprint
 from flask_jwt_extended import jwt_required, current_user
 from app.extension import db
 from app.models import Group, CurrencyTypes, GroupExpenseOwe, GroupExpenses, User, Settlement
-from datetime import datetime, date
-from sqlalchemy import update, delete, or_
-import string, random
+from datetime import datetime
+from sqlalchemy import or_
 
 # Create a blueprint
-auth_bp = Blueprint('group_expense', __name__, url_prefix='/group/groupExpense')
+bp = Blueprint('group_expense', __name__, url_prefix='/group/groupExpense')
 
 ALLOWED_CURRENCIES = {c.value for c in CurrencyTypes} # type: ignore
 
 # Route to create new group expense
 # Return status only (201, 400, 404)
-@auth_bp.route('/add', methods=['POST'])
+@bp.route('/add', methods=['POST'])
 @jwt_required()
 def add_group_expense():
     # @params
@@ -95,24 +94,24 @@ def add_group_expense():
 
 # Route to create a settlement
 # Return status only (201, 400, 404)
-@auth_bp.route('/settle', methods=['POST'])
+@bp.route('/settle', methods=['POST'])
 @jwt_required()
 def settle():
     # @params
-    # payer: current_user
-    # payee: string
+    # payee: current_user
+    # payer: string
     # group_id: string
     # amount: float
     # currency: string
     # time: string in isoformat
     data=request.get_json() or {}
-    payee = data.get('payee')
+    payer = data.get('payer')
     group_id = data.get('group_id')
     amount = data.get('amount')
     currency = data.get('currency')
     time = data.get('time')
 
-    if not payee or not amount or not currency or not time:
+    if not payer or not amount or not currency or not time:
         return jsonify({ 'message': 'Missing values' }), 400
 
     try:
@@ -120,8 +119,8 @@ def settle():
     except ValueError:
         return jsonify({'message': 'Invalid time format'}), 400
 
-    payee = User.query.filter_by(username = payee).first()
-    if not payee:
+    payer = User.query.filter_by(username = payer).first()
+    if not payer:
         return jsonify({'message': 'User not found'}), 404
     
     if currency not in ALLOWED_CURRENCIES:
@@ -139,19 +138,19 @@ def settle():
         return jsonify({'message': 'Group not found'}), 404
     
     # Set all expenses between user and lender: settled = True
-    # User as the borrower
-    ges = GroupExpenses.query.filter_by(group_id=group.id).filter_by(lender_id=payee.id).all()
-    for ge in ges:
-        for geo in ge.owes:
-            if geo.borrower_id == current_user.id:
-                geo.settled=True
-                break
-    
     # User as the lender
     ges = GroupExpenses.query.filter_by(group_id=group.id).filter_by(lender_id=current_user.id).all()
     for ge in ges:
         for geo in ge.owes:
-            if geo.borrower_id == payee.id:
+            if geo.borrower_id == payer.id:
+                geo.settled=True
+                break
+    
+    # User as the borrower
+    ges = GroupExpenses.query.filter_by(group_id=group.id).filter_by(lender_id=payer.id).all()
+    for ge in ges:
+        for geo in ge.owes:
+            if geo.borrower_id == current_user.id:
                 geo.settled=True
                 break 
     
@@ -162,7 +161,7 @@ def settle():
             GroupExpenses.group_id == group.id,
             or_(
                 GroupExpenses.lender_id == current_user.id,
-                GroupExpenses.lender_id == payee.id
+                GroupExpenses.lender_id == payer.id
             )
         )
         .all()
@@ -178,8 +177,8 @@ def settle():
         # Add new settlement
         settlement = Settlement(
             group_id = group.id,            # type: ignore
-            payer_id = current_user.id,     # type: ignore
-            payee_id = payee.id,            # type: ignore
+            payer_id = payer.id,            # type: ignore
+            payee_id = current_user.id,     # type: ignore
             amount = amount,                # type: ignore
             currency = currency,            # type: ignore
             created_at = time               # type: ignore

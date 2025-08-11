@@ -1,4 +1,6 @@
-from flask import jsonify, request, Blueprint
+from flask import jsonify, request, Blueprint, Response
+import csv
+import io
 from flask_jwt_extended import jwt_required, current_user
 from app.extension import db, FINANCE_DATA
 from sqlalchemy import select, desc, extract
@@ -6,21 +8,21 @@ from app.models import Expenses, ExpenseTypes, CurrencyTypes
 from datetime import date
 
 # Create a blueprint
-auth_bp = Blueprint('expense_data', __name__, url_prefix='/expenses/data')
+bp = Blueprint('expense_data', __name__, url_prefix='/expenses/data')
 
 # List of allowed currencies
 ALLOWED_CURRENCIES = {c.value for c in CurrencyTypes} # type: ignore
 
 # Route for getting username
 # Return a single string
-@auth_bp.route('/username', methods=['POST'])
+@bp.route('/username', methods=['POST'])
 @jwt_required()
 def username():
     return jsonify(current_user.username)
 
 # Route for getting all expense types
 # Return a list
-@auth_bp.route('/expense_types', methods=['POST'])
+@bp.route('/expense_types', methods=['POST'])
 @jwt_required()
 def expense_types():
     categories = [e.value for e in ExpenseTypes] # type: ignore
@@ -28,7 +30,7 @@ def expense_types():
 
 # Route for getting all allowed currencies
 # Return a list
-@auth_bp.route('/currency_types', methods=['POST'])
+@bp.route('/currency_types', methods=['POST'])
 @jwt_required()
 def currency_types():
     currencies = [c.value for c in CurrencyTypes] # type: ignore
@@ -40,12 +42,11 @@ def currency_types():
 # @params
 #   id: int                        
 #   category: string
-#   optional_cat: string
 #   amount: float rounded to 2 decimal point
 #   currency: string of length 3
 #   description: string
 #   time: string of date in isoformat
-@auth_bp.route('/expenses', methods=['POST'])
+@bp.route('/expenses', methods=['POST'])
 @jwt_required()
 def expenses():
     # Select all expenses and sort from newest to oldest
@@ -67,8 +68,7 @@ def expenses():
             trs_list = [
                 {
                     "id":               trn.id,                           
-                    "category":         trn.category.value,                 # type: ignore
-                    "optional_cat":     trn.optional_cat,        
+                    "category":         trn.category.value,                 # type: ignore     
                     "amount":           round(float(trn.amount), 2),                    
                     "currency":         trn.currency.value,                 # type: ignore
                     "description":      trn.description,          
@@ -84,8 +84,7 @@ def expenses():
             trs_list = [
                 {
                     "id":               trn.id,                           
-                    "category":         trn.category.value,                     # type: ignore
-                    "optional_cat":     trn.optional_cat,        
+                    "category":         trn.category.value,                     # type: ignore  
                     "amount":           amt(trn.amount, trn.currency.value),    # type: ignore
                     "currency":         currency,           
                     "description":      trn.description,          
@@ -106,8 +105,7 @@ def expenses():
         trs_list = [
             {
                 "id":               trn.id,                           
-                "category":         trn.category.value,                     # type: ignore
-                "optional_cat":     trn.optional_cat,        
+                "category":         trn.category.value,                     # type: ignore       
                 "amount":           amt(trn.amount, trn.currency.value),    # type: ignore
                 "currency":         currency,           
                 "description":      trn.description,          
@@ -121,12 +119,11 @@ def expenses():
 # Return a dict
 # @params                      
 #   category: string
-#   optional_cat: string
 #   amount: float rounded to 2 decimal point
 #   currency: string of length 3
 #   description: string
 #   time: string of date in isoformat
-@auth_bp.route('/updating', methods=['POST'])
+@bp.route('/updating', methods=['POST'])
 @jwt_required()
 def updating_expense():
     
@@ -141,8 +138,7 @@ def updating_expense():
         return jsonify({"message":"Unauthorized"}), 400
     
     return jsonify({                           
-            "category":         trn.category.value,                 # type: ignore
-            "optional_cat":     trn.optional_cat,        
+            "category":         trn.category.value,                 # type: ignore       
             "amount":           trn.amount,                    
             "currency":         trn.currency.value,                 # type: ignore
             "description":      trn.description,          
@@ -158,12 +154,11 @@ def updating_expense():
 #       @params
 #           id: int                        
 #           category: string
-#           optional_cat: string
 #           amount: float rounded to 2 decimal point
 #           currency: string of length 3
 #           description: string
 #           time: string of date in isoformat
-@auth_bp.route('/dashboard', methods = ['POST'])
+@bp.route('/dashboard', methods = ['POST'])
 @jwt_required()
 def newest_expenses(): 
     # Select the newest 5 expenses 
@@ -187,8 +182,7 @@ def newest_expenses():
     trs_list = [
         {
             "id":               trn.id,                           
-            "category":         trn.category.value,                     # type: ignore
-            "optional_cat":     trn.optional_cat,        
+            "category":         trn.category.value,                     # type: ignore       
             "amount":           amt(trn.amount, trn.currency.value),    # type: ignore
             "currency":         currency,           
             "description":      trn.description,          
@@ -198,10 +192,12 @@ def newest_expenses():
     ]
 
     # Select all expenses today
-    today = date.today().day
+    today = date.today()
     query = (select(Expenses)
                 .where(Expenses.user_id == current_user.id)
-                .where(extract('day', Expenses.time) == today))
+                .where(extract('year', Expenses.time) == today.year)
+                .where(extract('month', Expenses.time) == today.month)
+                .where(extract('day', Expenses.time) == today.day))
     trs = db.session.execute(query).scalars().all() 
     
     # Calculate today's total spending
