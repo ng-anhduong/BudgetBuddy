@@ -6,9 +6,19 @@ This project can be tested through the internet.
 
 ## Get started
 
-1. Configure frontend    
+1. Create an .env file as the example file
+
+2. configure backend on your local machine, in the 1st terminal
    ```bash
-   cd frontend
+   cd backend
+   pip install -r requirements.txt
+   python init_db.py
+   python run.py
+   ```
+
+3. Configure frontend on your local machine, in the 2nd terminal
+   ```bash
+   cd BudgetBuddy
    npm install
-   npx expo start --tunnel
+   npx expo start
    ```
