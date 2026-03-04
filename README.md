@@ -2,13 +2,19 @@
 
 This is a project created with React Native frontend and Flask backend running on 2 different servers. Backend is currently running on Render.
 This project can be tested through the internet.
-<a href ="https://docs.google.com/document/d/1NUjCQ-YFUp2MqdnXLQ5tkwcLuIX0_wzYd3lGwBkgnOY/edit?usp=drive_link"> Click here for more information </a>
+<a href ="https://docs.google.com/document/d/1CAI5PpDt-ZQlI6et1LIvM2t7ppMq_3EUZiu3UqgLrbA/edit?usp=sharing"> Click here for more information </a>
 
-Testing the app using Expo Go:
+## Preview of the app using Expo Go:
+1. Install Expo Go from Play Store or Apple Store
+2. Scan the QR code or type in the url:
+
+   <a>exp://u.expo.dev/d61f0738-97c8-4d32-99cc-e11bf900a168/group/b4fed26f-dd25-4d9d-b349-3f2d03416da2</a>
+   
 <div align="center">
-   <img width="328" height="333" alt="Screenshot 2025-08-11 191804" src="https://github.com/user-attachments/assets/3fda5fd4-88ca-4dbc-ae35-0b3ba1ceaed3" />
+   <img width="462" height="458" alt="image" src="https://github.com/user-attachments/assets/65177947-3a7e-4929-82e5-d3712407b24f" />
 </div>
-## Get started
+
+## How to run it locally
 
 1. Create an .env file as the example file
 
